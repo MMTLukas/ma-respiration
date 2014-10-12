@@ -1,1 +1,11 @@
 .idea
+
+
+platforms/android/CordovaLib/ant-build/AndroidManifest.xml.d
+platforms/android/CordovaLib/ant-gen/R.java.d
+platforms/android/CordovaLib/local.properties
+platforms/android/ant-build/AndroidManifest.xml.d
+platforms/android/ant-build/HelloWorld-debug-unaligned.apk.d
+platforms/android/ant-build/HelloWorld.ap_.d
+platforms/android/ant-build/classes.dex.d
+platforms/android/ant-gen/R.java.d
