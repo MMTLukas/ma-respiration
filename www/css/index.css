@@ -15,7 +15,7 @@ html, body {
 .app {
     height: 100%;
     width: 100%;
-    background:url("../img/brushed.png");
+    background: url("../img/brushed.png");
 }
 
 /* Landscape layout (with min-width)
@@ -30,59 +30,91 @@ html, body {
 
 #menu {
     width: 100%;
-    height:50px;
+    height: 50px;
     float: left;
 }
 
 #menu .button {
     background: #F52C36;
     width: 50%;
-    height:100%
-    color: white;
+    height: 100% color : white;
     float: left;
     font-size: 32px;
     text-align: center;
     line-height: 32px;
+
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
 #menu .button:first-child {
-    border-right:1px solid #333;
+    border-right: 1px solid #333;
 }
 
-#menu .button:hover, #menu .button:active{
-    background:#ED535A;
+#menu .button:active {
+    background: #ED535A;
 }
 
-#menu .button a:link, #menu .button a:visited{
+#menu .button a:link, #menu .button a:visited {
     text-decoration: none;
-    color:white;
-    width:100%;
-    height:100%;
+    color: white;
+    width: 100%;
+    height: 100%;
     padding: 10px;
-    float:left;
+    float: left;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-#diagram img{
-    height:500px;
+#diagram img {
+    max-width: 90%;
+    width: auto;
     position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     margin: auto;
 }
 
-#counter{
-    width:100%;
-    position: fixed;
-    bottom:0;
-    padding:10px;
-    background:#F52C36;
+#data, #counter {
+    width: 100%;
+    padding: 10px 0px 10px 0px;
+    background: #F52C36;
     text-align: center;
-    color:white;
-    font-size:52px;
-    line-height:52px;
+    color: white;
+}
+
+#counter {
+    position: fixed;
+    font-size: 52px;
+    line-height: 52px;
+    bottom: 0;
+}
+
+#data {
+    border-top: 1px solid #333;
+    font-size: 18px;
+    height: 38px;
+    line-height: 38px;
+    float: left;
+    text-align: center;
+}
+
+#data > div {
+    display: inline-block;
+}
+
+#data .axis {
+    width: 70px;
+    float: left;
+    text-align: left;
+}
+
+#data .axis {
+    float: left;
+    padding: 0px 10px 0px 10px;
 }

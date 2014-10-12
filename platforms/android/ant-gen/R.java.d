@@ -1,30 +1,24 @@
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-gen/com/phonegap/helloworld/R.java \
- : /Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-hdpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-land-hdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-land-ldpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-land-mdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-land-xhdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-ldpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-mdpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-port-hdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-port-ldpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-port-mdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-port-xhdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/drawable-xhdpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/values/strings.xml \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/res/xml/config.xml \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-hdpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-land-hdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-land-ldpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-land-mdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-land-xhdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-ldpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-mdpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-port-hdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-port-ldpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-port-mdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-port-xhdpi/screen.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/res/drawable-xhdpi/icon.png \
-/Users/chri/Documents/FHS_workspace/Master/1. Semester/Praktische Informatik/project/platforms/android/ant-build/AndroidManifest.xml \
+F:\Projekte\Respiration\platforms\android\ant-gen\com\phonegap\helloworld\R.java \
+ : F:\Projekte\Respiration\platforms\android\res\drawable\icon.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-hdpi\icon.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-land-hdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-land-ldpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-land-mdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-land-xhdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-port-hdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-port-ldpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-port-mdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\drawable-port-xhdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\res\values\strings.xml \
+F:\Projekte\Respiration\platforms\android\res\xml\config.xml \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable\icon.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-hdpi\icon.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-land-hdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-land-ldpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-land-mdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-land-xhdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-port-hdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-port-ldpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-port-mdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\res\drawable-port-xhdpi\screen.png \
+F:\Projekte\Respiration\platforms\android\ant-build\AndroidManifest.xml \
