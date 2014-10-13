@@ -1,11 +1,51 @@
+# PHPSTORM
 .idea
 
+# ANDROID
+# built application files
+*.apk
+*.ap_
+platforms/
 
-platforms/android/CordovaLib/ant-build/AndroidManifest.xml.d
-platforms/android/CordovaLib/ant-gen/R.java.d
-platforms/android/CordovaLib/local.properties
-platforms/android/ant-build/AndroidManifest.xml.d
-platforms/android/ant-build/HelloWorld-debug-unaligned.apk.d
-platforms/android/ant-build/HelloWorld.ap_.d
-platforms/android/ant-build/classes.dex.d
-platforms/android/ant-gen/R.java.d
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files - android project subfolder
+Android/bin/
+Android/gen/
+Android/assets/
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# IOS / Xcode
+build/*
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+xcuserdata
+profile
+*.moved-aside
+IOS/www/
+
+# OSX
+.DS_Store
+# Thumbnails
+._*
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
