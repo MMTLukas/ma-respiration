@@ -11,7 +11,7 @@ Estimation of respiration experiment via accelerator sensor from smartphone.
 - As a user I want to click a start / stop button to begin and end the measurement
 - As a user I want to see a live diagram
 - As a user I want to see the min an max values of the diagram
-(- As a user I want to see an archive with the last few diagrams)
+- (As a user I want to see an archive with the last few diagrams)
 
 ## Developer stories
 - As a developer I want to get the values of the z-axis of the accelerometer
@@ -20,4 +20,4 @@ Estimation of respiration experiment via accelerator sensor from smartphone.
 - As a developer I want to filter with gaussian filter the values to get reliable data
 - As a developer I want to create a live diagram with the filtered data
 - As a developer I want to calculate the respiratory frequency of the filtered data
-(- As a developer I want to save the data in the local storage to archive the data)
+- (As a developer I want to save the data in the local storage to archive the data)
