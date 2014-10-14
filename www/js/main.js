@@ -3,7 +3,7 @@ var app = {
     this.bindEvents();
   },
   bindEvents: function () {
-    document.querySelector("#data .message").innerHTML = "Beschleunigungs-Sensor nicht vorhanden";
+    //document.querySelector("#data .message").innerHTML = "Beschleunigungs-Sensor nicht vorhanden";
     document.addEventListener("deviceready", this.onDeviceReady, false);
   },
   onDeviceReady: function () {
