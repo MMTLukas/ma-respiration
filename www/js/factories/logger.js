@@ -54,8 +54,7 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
         alert("Error code: " + err.code);
     }
 
-    var log = function() {
-
+    var log = function() {s
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
     }
 
