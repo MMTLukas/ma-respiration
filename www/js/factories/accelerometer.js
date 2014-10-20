@@ -34,7 +34,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
                     var zValues = JSON.parse(storage.getItem("zValues"));
                     zValues.push(z);
                     storage.setItem("zValues", JSON.stringify(zValues));
-                    console.log(JSON.stringify(storage.getItem("zValues")));
+                    console.log(z);
 
                     // collect data for 60 seconds
                     /*if(Date.now() - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
@@ -58,9 +58,14 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         return z;
     }
 
+    var getZValues = function(){
+        return JSON.parse(storage.getItem("zValues")) || [];
+    }
+
     return {
         button: button,
         buttonText: buttonText,
-        getZ: getZ
+        getZ: getZ,
+        getZValues: getZValues
     }
 });
