@@ -1,3 +1,5 @@
-data = read.table("log.txt", sep=",")
-#par(mar = rep(2, 4))
+data = read.csv("log.csv", sep="\n", header = T)
+
+data
+
 plot(data)
