@@ -19,8 +19,9 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
                     z = Math.floor(acceleration.z * 100) / 100;
 
                      // collect data for 60 seconds
-                    if(Date.now() - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
-                        Logger.collectData(z);
+                    var currentTimestamp = Date.now();
+                    if(currentTimestamp - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
+                        Logger.collectData(z, currentTimestamp);
                     }
                     else if(Logger.getLoggingActive()) {
                         // Datei schreiben!

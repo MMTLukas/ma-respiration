@@ -1,7 +1,7 @@
 angular.module('respiratoryFrequency').factory('Logger', function () {
 
-    var startTimestamp = 0, timeFrame = 10 * 1000; // seconds
-    var data = [];
+    var startTimestamp = 0, timeFrame = 60 * 1000; // seconds
+    var data = ["Timestamps,z-Value"];
     var loggingActive;
 
     var initializeStart = function() {
@@ -26,8 +26,8 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
         loggingActive = value;
     }
 
-    var collectData = function(z) {
-        data.push(z);
+    var collectData = function(z, currentTimestamp) {
+        data.push(currentTimestamp + "," + z);
     }
 
     var gotFS = function(fs) {
@@ -47,7 +47,7 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
             alert('Write failed: ' + e.toString());
         };
 
-        fileWriter.write(data.toString());
+        fileWriter.write(data.join([separator = "\n"]));
     }
 
     var fail = function(err) {
