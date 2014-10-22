@@ -40,11 +40,11 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
 
     var gotFileWriter = function(fileWriter) {
         fileWriter.onwriteend = function(e) {
-            alert('Write completed.');
+            alert('Logging completed.');
         };
 
         fileWriter.onerror = function(e) {
-            alert('Write failed: ' + e.toString());
+            alert('Logging failed: ' + e.toString());
         };
 
         fileWriter.write(data.join([separator = "\n"]));
