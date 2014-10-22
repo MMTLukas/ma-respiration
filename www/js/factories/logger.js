@@ -3,6 +3,7 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
     var startTimestamp = 0, timeFrame = 60 * 1000; // seconds
     var data = ["Timestamps,z-Value"];
     var loggingActive;
+    var filter = false; // used to give the logfile the correct name
 
     var initializeStart = function() {
         startTimestamp = Date.now();
@@ -31,7 +32,13 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
     }
 
     var gotFS = function(fs) {
-        fs.root.getFile('log.csv', {create: true}, gotFileEntry, fail);
+        if(filter === false) {
+            fs.root.getFile('log.csv', {create: true}, gotFileEntry, fail);
+        }
+        else {
+            filter = false;
+            fs.root.getFile('logFiltered.csv', {create: true}, gotFileEntry, fail);
+        }
     }
 
     var gotFileEntry = function(fileEntry) {
@@ -55,8 +62,13 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
     }
 
     var log = function() {
-
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+    }
+
+    var logFilteredData = function(filteredData) {
+        data = filteredData;
+        filter = true;
+        log();
     }
 
     return {
@@ -66,6 +78,7 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
         getTimeFrame: getTimeFrame,
         getLoggingActive: getLoggingActive,
         setLoggingActive: setLoggingActive,
-        log: log
+        log: log,
+        logFilteredData: logFilteredData
     }
 });
