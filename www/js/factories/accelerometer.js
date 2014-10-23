@@ -13,32 +13,37 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     var filteredData = [];
     var medianFilterWindowSize = FilterMedian.getWindowSize();
 
-    Logger.initializeStart();
-
     var start = function () {
+        Logger.initializeStart();
+
         if (navigator.accelerometer) {
             if(watchId){
                 return;
             }
-
-
 
             watchId = navigator.accelerometer.watchAcceleration(
                 function (acceleration) {
                     z = Math.floor(acceleration.z * 100) / 100;
                     unfilteredData.push(z);
 
+                    // calculate the time pased from the beginning
+                    var currentTimestamp = Date.now(),
+                        timeSinceStart = (currentTimestamp - Logger.getStartTimestamp()),
+                        timestampInMinutes = new Date(timeSinceStart).getMinutes(),
+                        timestampInSeconds = new Date(timeSinceStart).getSeconds(),
+                        timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds(),
+                        logTimeMeasurement = (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
 
-                    var currentTimestamp = Date.now();
+                    console.log(logTimeMeasurement);
 
                     if(unfilteredData.length >= medianFilterWindowSize) {
-                        filteredData.push(currentTimestamp + ", " + FilterMedian.calculateMedian(unfilteredData));
+                        filteredData.push(logTimeMeasurement + ", " + FilterMedian.calculateMedian(unfilteredData));
                         unfilteredData = []; // clear array to avoid same values to be the median
                     }
 
                      // collect data for 60 seconds
                     if(currentTimestamp - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
-                        Logger.collectData(z, currentTimestamp);
+                        Logger.collectData(z, logTimeMeasurement);
                     }
                     else if(Logger.getLoggingActive()) {
                         // Datei schreiben!
