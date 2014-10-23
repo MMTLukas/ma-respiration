@@ -1,5 +1,5 @@
 angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scope, Accelerometer, $interval) {
-    var HEIGHT = window.innerHeight - 222;
+    var HEIGHT = window.innerHeight - 172;
     var WIDTH = window.innerWidth;
 
     var canvas = d3.select("#diagram")

@@ -19,10 +19,6 @@
         <div class="button"><a href="#">Archiv</a></div>
     </div>
     <div id="data" ng-controller="dataCtrl">
-        <div>
-            <div class="message" ng-hide="getLatestZ">Zugriff auf Accelerator...</div>
-            <div class="accelerator" ng-show="getLatestZ">Z: {{getLatestZ}}</div>
-        </div>
         <div class="button" ng-click="button()"><a href="#">{{buttonText}}</a></div>
     </div>
     <div id="diagram" ng-controller="diagramCtrl">
