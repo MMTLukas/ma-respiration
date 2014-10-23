@@ -19,8 +19,8 @@
     </div>
     <div id="data" ng-controller="dataCtrl">
         <div>
-            <div class="message" ng-hide="getZ">Zugriff auf Accelerator...</div>
-            <div class="axis" ng-show="getZ">Z: {{getZ()}}</div>
+            <div class="message" ng-hide="getLatestZ">Zugriff auf Accelerator...</div>
+            <div class="axis" ng-show="getLatestZ">Z: {{getLatestZ}}</div>
         </div>
         <div class="button" ng-click="button()"><a href="#">{{buttonText}}</a></div>
     </div>

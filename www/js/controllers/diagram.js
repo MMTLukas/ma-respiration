@@ -52,7 +52,7 @@ angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scop
 
     var intervalID = $interval(function () {
         if(navigator.accelerometer){
-            zValues = Accelerometer.getZValues();
+            zValues = Accelerometer.getLiveValues();
         }
 
         var min = 10;
@@ -84,5 +84,5 @@ angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scop
                 var value = (d-min)*scaleFactor;
                 return value;
             });
-    }, 333);
+    }, 10000);
 });
