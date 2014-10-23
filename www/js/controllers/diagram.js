@@ -32,16 +32,56 @@ angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scop
     9.85, 9.67, 9.51, 9.03, 10.17, 9.48, 9.48, 9, 9.59, 9.62, 9.56, 9.56, 10.06, 9.81, 10.3, 9.19, 9.19, 9.47, 9.66,
     8.59, 9.41, 9.41, 9.5, 9.26, 9.54, 9.52, 9.52, 9.51, 10.64, 9.81, 9.53, 9.53, 9.55, 9.47, 9.55]
 
+  var sampleData = [{
+    "x": 1,
+    "y": 5
+  }, {
+    "x": 20,
+    "y": 20
+  }, {
+    "x": 40,
+    "y": 10
+  }, {
+    "x": 60,
+    "y": 40
+  }, {
+    "x": 80,
+    "y": 5
+  }, {
+    "x": 100,
+    "y": 60
+  }];
+
   var xRange = d3.scale.linear()
     .range([40, 400])  //The amount of the svg which will be covered
-    .domain([0, 100]); //Defines the minimum and maximum value
+    .domain([d3.min(sampleData, function(d) {    //Defines the minimum and maximum value by d3 via variable
+      return (d.x);
+    }), d3.max(sampleData, function(d) {
+      return d.x;
+    })]);
+
   var yRange = d3.scale.linear()
-    .range([40, 400])  //The amount of the svg which will be covered
-    .domain([0, 100]); //Defines the minimum and maximum value
+    .range([400, 40])  //The amount of the svg which will be covered
+    .domain([d3.min(sampleData, function(d) {    //Defines the minimum and maximum value by d3 via variable
+      return d.y;
+    }), d3.max(sampleData, function(d) {
+      return d.y;
+    })]);
 
   //The axis need to be scaled to the defined ranges
   var xAxis = d3.svg.axis().scale(xRange);
-  var yAxis = d3.svg.axis().scale(yRange);
+  var yAxis = d3.svg.axis().scale(yRange).orient("left");
 
-  
+  //Add the axis to the svg added previously
+  canvas.append("svg:g").call(xAxis).attr("transform", "translate(0,400)");
+  canvas.append("svg:g").call(yAxis).attr("transform", "translate(40,0)");
+
+  var circles = canvas.selectAll("circle").data(sampleData);
+  circles
+    .enter()
+    .insert("circle")
+    .attr("cx", function(d) { return xRange(d.x); })
+    .attr("cy", function(d) { return yRange(d.y); })
+    .attr("r", 10)
+    .style("fill", "red");
 });
