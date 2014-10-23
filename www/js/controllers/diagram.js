@@ -1,87 +1,89 @@
 angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scope, Accelerometer, $interval) {
-  var canvas = d3.select("#diagram")
-    .append("svg")
-    .attr("width", 500)
-    .attr("height", 500);
+  var canvas = d3.select("#diagram");
+  var HEIGHT = 1000;
+  var WIDTH = 500;
+  var MARGINS = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 50
+  }
+  var xRange = d3.scale.linear()
+    .range([MARGINS.left, WIDTH - MARGINS.right])
+    .domain([d3.min(lineData, function (d) {
+      return d.x;
+    }), d3.max(lineData, function (d) {
+      return d.x;
+    })])
 
-  var zValues = [9.44, 9.44, 9.46, 9.55, 9.43, 9.52, 9.52, 9.49, 9.52, 9.47, 9.55, 9.55, 9.48, 9.32, 9.55, 9.55, 9.6,
-    9.27, 9.42, 9.61, 9.61, 10.53, 10.4, 8.92, 10.24, 10.24, 8.72, 9.67, 9.74, 9.74, 9.21, 9.43, 10.35, 9.5, 9.5,
-    10.3, 9.72, 8.93, 9.53, 9.53, 9.59, 8.44, 9.4, 9.4, 9.7, 9.18, 9.48, 9.45, 9.45, 9.64, 9.78, 9.44, 9.55, 9.55,
-    9.3, 9.18, 9.25, 9.25, 9.93, 8.77, 9.87, 9.15, 9.15, 8.22, 8.97, 9.4, 9.07, 10.01, 10.01, 10.42, 9.49, 9.89,
-    9.18, 9.2, 9.2, 9.29, 9.49, 9.84, 9.17, 9.17, 9.52, 10.38, 9.32, 9.28, 9.28, 9.49, 10.07, 9.6, 9.1, 9.1, 9.53,
-    9.77, 9.97, 9.43, 9.43, 9.67, 8.85, 9.57, 10.02, 9.02, 8.97, 9.67, 9.67, 9.49, 9.52, 9.05, 9.05, 9.27, 9.56,
-    9.46, 9.48, 9.48, 9.86, 8.75, 10.03, 9.79, 9.79, 8.48, 9.82, 9.9, 9.51, 9.16, 10.05, 10.05, 9.47, 9.39, 9.47,
-    9.77, 9.77, 9.24, 9.23, 9.83, 9.83, 9.69, 9.84, 9.07, 8.73, 8.73, 10.14, 9.33, 9.57, 9.35, 9.35, 9.75, 9.35,
-    9.25, 9.9, 9.9, 9.53, 9.32, 9.48, 9.01, 9.76, 9.28, 9.28, 10.04, 9.25, 9.57, 9.35, 9.27, 9.71, 9.71, 9.25, 9.26,
-    9.86, 9.2, 9.2, 9.22, 9.12, 9.23, 9.66, 9.66, 9.2, 9.78, 9.09, 9.38, 9.38, 9.37, 9.51, 9.08, 9.81, 9.81, 8.83,
-    9.64, 9.41, 9.28, 9.23, 9.23, 9.48, 10, 8.82, 9.82, 9.54, 9.29, 9.29, 9.19, 9.3, 9.61, 9.61, 9.97, 9.21, 9.36,
-    9.74, 9.68, 9.68, 9.45, 9.49, 9.47, 9.49, 9.49, 9.57, 9.58, 9.34, 9.5, 9.5, 9.55, 9.56, 9.39, 9.4, 9.4, 9.74,
-    9.42, 9.69, 9.62, 9.62, 8.99, 9.38, 9.82, 9.3, 9.34, 9.34, 10.03, 9.61, 9.23, 9.57, 9.57, 9.28, 9.47, 9.94,
-    9.17, 9.17, 9.47, 9.1, 9.37, 9.87, 9.87, 9.45, 9.32, 9.57, 9.64, 8.98, 8.98, 9.81, 9.27, 9.88, 9.53, 9.53, 9.94,
-    9.02, 9.59, 9.69, 9.69, 9.87, 9.77, 9.32, 9.48, 9.48, 9.16, 9.52, 9.52, 9.42, 9.42, 9.67, 9.46, 9.89, 9.44,
-    9.17, 9.17, 10.19, 9.2, 9.27, 9.19, 9.19, 9.55, 9.06, 9.97, 9.23, 9.23, 9.37, 9.39, 9.36, 9.27, 9.7, 9.46, 9.46,
-    9.42, 9.28, 9.36, 9.47, 9.47, 9.31, 9.47, 9.58, 8.99, 8.99, 9.3, 9.52, 9.52, 9.35, 9.35, 8.99, 9.76, 9.73, 8.99,
-    9.71, 9.71, 9.25, 9.26, 10.19, 9.44, 9.44, 9.23, 9.37, 9.34, 9.47, 9.47, 9.23, 9.68, 9.21, 9.59, 9.59, 9.41,
-    9.77, 9.6, 9.21, 9.21, 9.35, 9.76, 9.35, 9.67, 9.67, 9.29, 9.82, 9.98, 8.91, 9.67, 9.67, 9.69, 9.27, 9.36, 9.72,
-    9.72, 8.95, 8.95, 9.75, 9.47, 9.44, 9.27, 9.27, 9.68, 9.11, 9.67, 9.39, 9.39, 9.96, 9.16, 9.67, 9.48, 9.55,
-    9.55, 9.02, 9.7, 10, 10, 9.28, 9.72, 9.32, 9.48, 9.48, 9.87, 9.46, 9.7, 9.43, 9.34, 9.34, 9.57, 9.66, 9.52, 9.2,
-    9.99, 9.99, 9.64, 9.27, 9.4, 9.7, 9.42, 9.42, 9.9, 9.61, 9.32, 9.59, 9.59, 9.51, 9.23, 9.47, 9.6, 9.48, 9.2,
-    9.2, 9.64, 9.9, 9.3, 9.11, 9.11, 9.9, 9.08, 9.08, 9.81, 9.51, 9.81, 9.63, 9.37, 9.43, 9.3, 9.3, 9.42, 9.85,
-    9.38, 9.75, 9.75, 8.99, 9.93, 9.25, 9.73, 9.73, 9.33, 9.63, 8.64, 9.78, 9.78, 9.4, 9.25, 9.53, 8.98, 8.98, 9.34,
-    9.22, 9.65, 9.5, 9.21, 9.21, 9.48, 9.74, 9.35, 9.3, 9.3, 9.33, 9.07, 9.66, 10.04, 10.04, 9.58, 9.72, 8.87, 9.85,
-    9.85, 9.67, 9.51, 9.03, 10.17, 9.48, 9.48, 9, 9.59, 9.62, 9.56, 9.56, 10.06, 9.81, 10.3, 9.19, 9.19, 9.47, 9.66,
-    8.59, 9.41, 9.41, 9.5, 9.26, 9.54, 9.52, 9.52, 9.51, 10.64, 9.81, 9.53, 9.53, 9.55, 9.47, 9.55]
-
-  var sampleData = [{
-    "x": 1,
-    "y": 5
-  }, {
-    "x": 20,
-    "y": 20
-  }, {
-    "x": 40,
-    "y": 10
-  }, {
-    "x": 60,
-    "y": 40
-  }, {
-    "x": 80,
-    "y": 5
-  }, {
-    "x": 100,
-    "y": 60
-  }];
+  var lineData = [
+    {
+      "x": 1,
+      "y": 5
+    },
+    {
+      "x": 20,
+      "y": 20
+    },
+    {
+      "x": 40,
+      "y": 10
+    },
+    {
+      "x": 60,
+      "y": 40
+    },
+    {
+      "x": 80,
+      "y": 5
+    },
+    {
+      "x": 100,
+      "y": 60
+    }
+  ];
 
   var xRange = d3.scale.linear()
     .range([40, 400])  //The amount of the svg which will be covered
-    .domain([d3.min(sampleData, function(d) {    //Defines the minimum and maximum value by d3 via variable
+    .domain([d3.min(sampleData, function (d) {    //Defines the minimum and maximum value by d3 via variable
       return (d.x);
-    }), d3.max(sampleData, function(d) {
+    }), d3.max(sampleData, function (d) {
       return d.x;
     })]);
 
   var yRange = d3.scale.linear()
-    .range([400, 40])  //The amount of the svg which will be covered
-    .domain([d3.min(sampleData, function(d) {    //Defines the minimum and maximum value by d3 via variable
+    .range([HEIGHT - MARGINS.top, MARGINS.bottom])
+    .domain([d3.min(lineData, function (d) {
       return d.y;
-    }), d3.max(sampleData, function(d) {
+    }), d3.max(lineData, function (d) {
       return d.y;
     })]);
 
   //The axis need to be scaled to the defined ranges
-  var xAxis = d3.svg.axis().scale(xRange);
-  var yAxis = d3.svg.axis().scale(yRange).orient("left");
+  var xAxis = d3.svg.axis()
+    .scale(xRange)
+    .tickSize(5)
+    .tickSubdivide(true);
+  var yAxis = d3.svg.axis()
+    .scale(yRange)
+    .orient("left")
+    .tickSize(5)
+    .tickSubdivide(true);;
 
   //Add the axis to the svg added previously
-  canvas.append("svg:g").call(xAxis).attr("transform", "translate(0,400)");
-  canvas.append("svg:g").call(yAxis).attr("transform", "translate(40,0)");
+  canvas.append("svg:g").call(xAxis).attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")";
+  canvas.append("svg:g").call(yAxis).attr("transform", "translate(" + (MARGINS.left) + ",0)");
 
   var circles = canvas.selectAll("circle").data(sampleData);
   circles
     .enter()
     .insert("circle")
-    .attr("cx", function(d) { return xRange(d.x); })
-    .attr("cy", function(d) { return yRange(d.y); })
+    .attr("cx", function (d) {
+      return xRange(d.x);
+    })
+    .attr("cy", function (d) {
+      return yRange(d.y);
+    })
     .attr("r", 10)
     .style("fill", "red");
 });
