@@ -34,7 +34,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
                         timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds(),
                         logTimeMeasurement = (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
 
-                    console.log(logTimeMeasurement);
+                    //console.log(logTimeMeasurement);
 
                     if(unfilteredData.length >= medianFilterWindowSize) {
                         filteredData.push(logTimeMeasurement + ", " + FilterMedian.calculateMedian(unfilteredData));
