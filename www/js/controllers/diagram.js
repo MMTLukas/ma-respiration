@@ -68,7 +68,8 @@ angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scop
     .scale(yRange)
     .orient("left")
     .tickSize(5)
-    .tickSubdivide(true);;
+    .tickSubdivide(true);
+  ;
 
   //Add the axis to the svg added previously
   canvas.append("svg:g").call(xAxis).attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")";
@@ -86,4 +87,5 @@ angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scop
     })
     .attr("r", 10)
     .style("fill", "red");
+
 });
