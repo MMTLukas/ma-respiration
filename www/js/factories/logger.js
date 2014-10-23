@@ -71,7 +71,7 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
     }
 
     var logFilteredData = function(filteredData) {
-        data = filteredData;
+        data = data.concat(filteredData);
         filter = true;
         log();
     }
