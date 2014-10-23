@@ -27,8 +27,13 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
         loggingActive = value;
     }
 
-    var collectData = function(z, currentTimestamp) {
-        data.push(currentTimestamp + "," + z);
+    var calculateSeconds = function(currentTimestamp) {
+        var milliSeconds = new Date(currentTimestamp).getMilliseconds();
+        return milliSeconds;
+    }
+
+    var collectData = function(z, currentTimeStamp) {
+        data.push(calculateSeconds(currentTimeStamp) + "," + z);
     }
 
     var gotFS = function(fs) {
