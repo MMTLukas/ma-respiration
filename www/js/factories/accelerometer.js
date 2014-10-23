@@ -19,31 +19,34 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
             navigator.accelerometer.clearWatch(watchId);
             watchId = null;
 
-            console.log(liveStorage);
-            liveStorage = new Array();
+            console.log(JSON.stringify(liveStorage));
         } else {
             buttonText = "Stop";
+            liveStorage = new Array();
             watchId = navigator.accelerometer.watchAcceleration(
                 function (acceleration) {
-                    var currentValues = new Array(acceleration.timestamp, Math.floor(acceleration.z * 100) / 100);
+                    var currentValues = {
+                        "timestamp": acceleration.timestamp,
+                        "z": Math.floor(acceleration.z * 100) / 100
+                    };
                     liveStorage.push(currentValues);
 
-                    if(liveStorage[0][0] < currentValues[0]-liveDurationInMs){
+                    if (liveStorage[0].timestamp < currentValues.timestamp - liveDurationInMs) {
                         liveStorage.shift();
                     }
                 }.bind(this), function () {
                     alert("Beschleunigung konnte nicht abgefragt werden");
                 }, {
-                    frequency: 100
+                    frequency: 10
                 });
         }
     }
 
     var getLatestZ = function () {
-        return liveStorage[liveStorage.length-1]["z"] || 0;
+        return liveStorage[liveStorage.length - 1]["z"] || 0;
     }
 
-    var getLiveValues = function(){
+    var getLiveValues = function () {
         return liveStorage;
     }
 
@@ -53,4 +56,5 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         getLatestZ: getLatestZ,
         getLiveValues: getLiveValues
     }
-});
+})
+;

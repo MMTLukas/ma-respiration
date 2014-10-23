@@ -111,13 +111,13 @@ html, body {
     height:100px;
 }
 
-#data .axis {
+#data .accelerator {
     width: 120px;
     float: left;
     text-align: left;
 }
 
-#data .axis {
+#data .accelerator {
     float: left;
     padding: 0px 10px 0px 10px;
 }
