@@ -1,3 +1,3 @@
-angular.module('respiratoryFrequency').controller('counterCtrl', function () {
+angular.module('respiratoryFrequency').controller('counterCtrl', function ($scope) {
 
 });

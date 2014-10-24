@@ -1,80 +1,85 @@
 angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, Logger, FilterMedian) {
-    var z = 0, countdownID, watchId = null;
+  var countdownID;
+  var buttonText = "Start";
+  var watchId;
+  var liveStorage = [];
+  var liveDurationInMs = 20000;
 
-    //for desktop debugging and current development - next 5 lines
-    var countdown = function () {
-        //console.log(z);
-        countdownID = $timeout(countdown, 50);
-    }
-    countdownID = $timeout(countdown, 50);
+  // Medianfilter
+  var unfilteredData = [];
+  var filteredData = [];
+  var medianFilterWindowSize = FilterMedian.getWindowSize();
 
-    // Medianfilter
-    var unfilteredData = [];
-    var filteredData = [];
-    var medianFilterWindowSize = FilterMedian.getWindowSize();
-
-    var start = function () {
-        Logger.initializeStart();
-
-        if (navigator.accelerometer) {
-            if(watchId){
-                return;
-            }
-
-            watchId = navigator.accelerometer.watchAcceleration(
-                function (acceleration) {
-                    z = Math.floor(acceleration.z * 100) / 100;
-                    unfilteredData.push(z);
-
-                    // calculate the time pased from the beginning
-                    var currentTimestamp = Date.now(),
-                        timeSinceStart = (currentTimestamp - Logger.getStartTimestamp()),
-                        timestampInMinutes = new Date(timeSinceStart).getMinutes(),
-                        timestampInSeconds = new Date(timeSinceStart).getSeconds(),
-                        timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds(),
-                        logTimeMeasurement = (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
-
-                    //console.log(logTimeMeasurement);
-
-                    if(unfilteredData.length >= medianFilterWindowSize) {
-                        filteredData.push(logTimeMeasurement + ", " + FilterMedian.calculateMedian(unfilteredData));
-                        unfilteredData = []; // clear array to avoid same values to be the median
-                    }
-
-                     // collect data for 60 seconds
-                    if(currentTimestamp - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
-                        Logger.collectData(z, logTimeMeasurement);
-                    }
-                    else if(Logger.getLoggingActive()) {
-                        // Datei schreiben!
-                        Logger.log();
-                        Logger.setLoggingActive(false);
-                    }
-
-                }.bind(this), function () {
-                    alert("Beschleunigung konnte nicht abgefragt werden");
-                }, {
-                    frequency: 50
-                });
-        }
-        else {
-            alert("accelerometer is not there!");
-        }
+  var button = function () {
+    if (!navigator.accelerometer) {
+      //Because alert triggers "$apply already in progress" we use setTimeout(0)
+      setTimeout(function () {
+        alert("No accelerometer available")
+      }, 0);
+      return;
     }
 
-    var stop = function(){
-        Logger.logFilteredData(filteredData);
-        navigator.accelerometer.clearWatch(watchId);
-        watchId = null;
-    }
+    if (watchId) {
+      buttonText = "Start";
+      //Logger.logFilteredData(filteredData);
+      navigator.accelerometer.clearWatch(watchId);
+      watchId = null;
+    } else {
+      buttonText = "Stop";
+      liveStorage = new Array();
+      Logger.initializeStart();
 
-    var getZ = function () {
-        return z;
-    }
+      watchId = navigator.accelerometer.watchAcceleration(
+        function (acceleration) {
+          var currentValues = {
+            "timestamp": acceleration.timestamp,
+            "z": Math.floor(acceleration.z * 100) / 100
+          };
+          unfilteredData.push(currentValues.z);
 
-    return {
-        start: start,
-        stop: stop,
-        getZ: getZ
+          // calculate the time pased from the beginning
+          var timeSinceStart = (currentValues.timestamp - Logger.getStartTimestamp()),
+            timestampInMinutes = new Date(timeSinceStart).getMinutes(),
+            timestampInSeconds = new Date(timeSinceStart).getSeconds(),
+            timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds(),
+            logTimeMeasurement = (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
+
+          if (unfilteredData.length >= medianFilterWindowSize) {
+            filteredData.push(logTimeMeasurement + ", " + FilterMedian.calculateMedian(unfilteredData));
+            unfilteredData = []; // clear array to avoid same values to be the median
+          }
+
+          // collect data for 60 seconds
+          if (currentValues.timestamp - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
+            Logger.collectData(currentValues.z, logTimeMeasurement);
+          }
+
+          // Fill live storage only with values of 20 seconds
+          liveStorage.push(currentValues);
+          if (liveStorage[0].timestamp < currentValues.timestamp - liveDurationInMs) {
+            liveStorage.shift();
+          }
+        }.bind(this), function () {
+          alert("Beschleunigung konnte nicht abgefragt werden");
+        }, {
+          frequency: 10
+        });
     }
-});
+  }
+
+  var getLatestZ = function () {
+    return liveStorage[liveStorage.length - 1]["z"] || 0;
+  }
+
+  var getLiveValues = function () {
+    return liveStorage;
+  }
+
+  return {
+    button: button,
+    buttonText: buttonText,
+    getLatestZ: getLatestZ,
+    getLiveValues: getLiveValues
+  }
+})
+;
