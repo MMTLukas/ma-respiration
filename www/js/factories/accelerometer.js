@@ -1,9 +1,10 @@
 angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, Logger, FilterMedian) {
   var countdownID;
   var buttonText = "Start";
-  var watchId;
+  var isWatching;
   var liveStorage = [];
   var liveDurationInMs = 20000;
+  var startTimestamp = "";
 
   // Medianfilter
   var unfilteredData = [];
@@ -19,17 +20,20 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
       return;
     }
 
-    if (watchId) {
+    if (isWatching) {
       buttonText = "Start";
+      //console.log("in if");
       //Logger.logFilteredData(filteredData);
-      navigator.accelerometer.clearWatch(watchId);
-      watchId = null;
+      navigator.accelerometer.clearWatch(isWatching);
+      isWatching = null;
     } else {
+      setStartTimestamp();
+      //console.log("in else");
       buttonText = "Stop";
       liveStorage = new Array();
       Logger.initializeStart();
 
-      watchId = navigator.accelerometer.watchAcceleration(
+      isWatching = navigator.accelerometer.watchAcceleration(
         function (acceleration) {
           var currentValues = {
             "timestamp": acceleration.timestamp,
@@ -37,34 +41,40 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
           };
           unfilteredData.push(currentValues.z);
 
-          // calculate the time pased from the beginning
-          var timeSinceStart = (currentValues.timestamp - Logger.getStartTimestamp()),
-            timestampInMinutes = new Date(timeSinceStart).getMinutes(),
-            timestampInSeconds = new Date(timeSinceStart).getSeconds(),
-            timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds(),
-            logTimeMeasurement = (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
-
           if (unfilteredData.length >= medianFilterWindowSize) {
-            filteredData.push(logTimeMeasurement + ", " + FilterMedian.calculateMedian(unfilteredData));
-            unfilteredData = []; // clear array to avoid same values to be the median
+            var filteredValue = {
+              "timestamp": acceleration.timestamp,
+              "z": 0
+            };
+            //filteredData.push(getTimeSinceStart() + ", " + FilterMedian.calculateMedian(unfilteredData));
+            filteredValue.z = FilterMedian.calculateMedian(unfilteredData);
+            unfilteredData.shift();
+            // Fill live storage only with values of 20 seconds
+            liveStorage.push(filteredValue);
+            if (liveStorage[0].timestamp < currentValues.timestamp - liveDurationInMs) {
+              liveStorage.shift();
+            }
           }
 
           // collect data for 60 seconds
-          if (currentValues.timestamp - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
+          /*if (currentValues.timestamp - getStartTimestamp < Logger.getTimeFrame()) {
             Logger.collectData(currentValues.z, logTimeMeasurement);
-          }
-
-          // Fill live storage only with values of 20 seconds
-          liveStorage.push(currentValues);
-          if (liveStorage[0].timestamp < currentValues.timestamp - liveDurationInMs) {
-            liveStorage.shift();
-          }
+          }*/
         }.bind(this), function () {
           alert("Beschleunigung konnte nicht abgefragt werden");
         }, {
-          frequency: 10
+          frequency: 50
         });
     }
+  }
+
+  // calculate the time pased from the beginning
+  var getTimeSinceStart = function(currentValues) {
+    var timeSinceStart = (currentValues.timestamp - getStartTimestamp()),
+      timestampInMinutes = new Date(timeSinceStart).getMinutes(),
+      timestampInSeconds = new Date(timeSinceStart).getSeconds(),
+      timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds();
+      return (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
   }
 
   var getLatestZ = function () {
@@ -75,11 +85,20 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return liveStorage;
   }
 
+  var setStartTimestamp = function() {
+    startTimestamp = Date.now();
+  }
+
+  var getStartTimestamp = function() {
+    return startTimestamp;
+  }
+
   return {
     button: button,
     buttonText: buttonText,
     getLatestZ: getLatestZ,
-    getLiveValues: getLiveValues
+    getLiveValues: getLiveValues,
+    getStartTimestamp: getStartTimestamp
   }
 })
 ;
