@@ -1,8 +1,9 @@
 angular.module('respiratoryFrequency').factory('Logger', function () {
 
-    var startTimestamp = 0, timeFrame = 10 * 1000; // seconds
-    var data = [];
+    var startTimestamp = 0, timeFrame = 60 * 1000; // seconds
+    var data = ["Timestamps,z-Value"];
     var loggingActive;
+    var filter = false; // used to give the logfile the correct name
 
     var initializeStart = function() {
         startTimestamp = Date.now();
@@ -26,12 +27,18 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
         loggingActive = value;
     }
 
-    var collectData = function(z) {
-        data.push(z);
+    var collectData = function(z, logTimeMeasurement) {
+        data.push(logTimeMeasurement + "," + z);
     }
 
     var gotFS = function(fs) {
-        fs.root.getFile('log.csv', {create: true}, gotFileEntry, fail);
+        if(filter === false) {
+            fs.root.getFile('log.csv', {create: true}, gotFileEntry, fail);
+        }
+        else {
+            filter = false;
+            fs.root.getFile('logFiltered.csv', {create: true}, gotFileEntry, fail);
+        }
     }
 
     var gotFileEntry = function(fileEntry) {
@@ -40,14 +47,14 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
 
     var gotFileWriter = function(fileWriter) {
         fileWriter.onwriteend = function(e) {
-            alert('Write completed.');
+            alert('Logging completed.');
         };
 
         fileWriter.onerror = function(e) {
-            alert('Write failed: ' + e.toString());
+            alert('Logging failed: ' + e.toString());
         };
 
-        fileWriter.write(data.toString());
+        fileWriter.write(data.join([separator = "\n"]));
     }
 
     var fail = function(err) {
@@ -55,8 +62,13 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
     }
 
     var log = function() {
-
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+    }
+
+    var logFilteredData = function(filteredData) {
+        data = data.concat(filteredData);
+        filter = true;
+        log();
     }
 
     return {
@@ -66,6 +78,7 @@ angular.module('respiratoryFrequency').factory('Logger', function () {
         getTimeFrame: getTimeFrame,
         getLoggingActive: getLoggingActive,
         setLoggingActive: setLoggingActive,
-        log: log
+        log: log,
+        logFilteredData: logFilteredData
     }
 });

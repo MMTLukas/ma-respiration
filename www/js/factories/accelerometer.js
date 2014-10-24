@@ -1,56 +1,104 @@
-angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, Logger) {
-    var z = 0, countdownID, watchId = null;
+angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, Logger, FilterMedian) {
+  var countdownID;
+  var buttonText = "Start";
+  var isWatching;
+  var liveStorage = [];
+  var liveDurationInMs = 20000;
+  var startTimestamp = "";
 
-    //for desktop debugging and current development - next 5 lines
-    var countdown = function () {
-        //console.log(z);
-        countdownID = $timeout(countdown, 50);
+  // Medianfilter
+  var unfilteredData = [];
+  var filteredData = [];
+  var medianFilterWindowSize = FilterMedian.getWindowSize();
+
+  var button = function () {
+    if (!navigator.accelerometer) {
+      //Because alert triggers "$apply already in progress" we use setTimeout(0)
+      setTimeout(function () {
+        alert("No accelerometer available")
+      }, 0);
+      return;
     }
-    countdownID = $timeout(countdown, 50);
 
-    var start = function () {
-        if (navigator.accelerometer) {
-            if(watchId){
-                return;
+    if (isWatching) {
+      buttonText = "Start";
+      //console.log("in if");
+      //Logger.logFilteredData(filteredData);
+      navigator.accelerometer.clearWatch(isWatching);
+      isWatching = null;
+    } else {
+      setStartTimestamp();
+      //console.log("in else");
+      buttonText = "Stop";
+      liveStorage = new Array();
+      Logger.initializeStart();
+
+      isWatching = navigator.accelerometer.watchAcceleration(
+        function (acceleration) {
+          var currentValues = {
+            "timestamp": acceleration.timestamp,
+            "z": Math.floor(acceleration.z * 100) / 100
+          };
+          unfilteredData.push(currentValues.z);
+
+          if (unfilteredData.length >= medianFilterWindowSize) {
+            var filteredValue = {
+              "timestamp": acceleration.timestamp,
+              "z": 0
+            };
+            //filteredData.push(getTimeSinceStart() + ", " + FilterMedian.calculateMedian(unfilteredData));
+            filteredValue.z = FilterMedian.calculateMedian(unfilteredData);
+            unfilteredData.shift();
+            // Fill live storage only with values of 20 seconds
+            liveStorage.push(filteredValue);
+            if (liveStorage[0].timestamp < currentValues.timestamp - liveDurationInMs) {
+              liveStorage.shift();
             }
-            Logger.initializeStart();
-            watchId = navigator.accelerometer.watchAcceleration(
-                function (acceleration) {
-                    z = Math.floor(acceleration.z * 100) / 100;
+          }
 
-                     // collect data for 60 seconds
-                    if(Date.now() - Logger.getStartTimestamp() < Logger.getTimeFrame()) {
-                        Logger.collectData(z);
-                    }
-                    else if(Logger.getLoggingActive()) {
-                        // Datei schreiben!
-                        Logger.log();
-                        Logger.setLoggingActive(false);
-                    }
-
-                }.bind(this), function () {
-                    alert("Beschleunigung konnte nicht abgefragt werden");
-                }, {
-                    frequency: 50
-                });
-        }
-        else {
-            alert("accelerometer is not there!");
-        }
+          // collect data for 60 seconds
+          /*if (currentValues.timestamp - getStartTimestamp < Logger.getTimeFrame()) {
+            Logger.collectData(currentValues.z, logTimeMeasurement);
+          }*/
+        }.bind(this), function () {
+          alert("Beschleunigung konnte nicht abgefragt werden");
+        }, {
+          frequency: 50
+        });
     }
+  }
 
-    var stop = function(){
-        navigator.accelerometer.clearWatch(watchId);
-        watchId = null;
-    }
+  // calculate the time pased from the beginning
+  var getTimeSinceStart = function(currentValues) {
+    var timeSinceStart = (currentValues.timestamp - getStartTimestamp()),
+      timestampInMinutes = new Date(timeSinceStart).getMinutes(),
+      timestampInSeconds = new Date(timeSinceStart).getSeconds(),
+      timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds();
+      return (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
+  }
 
-    var getZ = function () {
-        return z;
-    }
+  var getLatestZ = function () {
+    return liveStorage[liveStorage.length - 1]["z"] || 0;
+  }
 
-    return {
-        start: start,
-        stop: stop,
-        getZ: getZ
-    }
-});
+  var getLiveValues = function () {
+    return liveStorage;
+  }
+
+  var setStartTimestamp = function() {
+    startTimestamp = Date.now();
+  }
+
+  var getStartTimestamp = function() {
+    return startTimestamp;
+  }
+
+  return {
+    button: button,
+    buttonText: buttonText,
+    getLatestZ: getLatestZ,
+    getLiveValues: getLiveValues,
+    getStartTimestamp: getStartTimestamp
+  }
+})
+;

@@ -1,4 +1,5 @@
 plugins/
+logs/
 
 # PHPSTORM
 .idea
