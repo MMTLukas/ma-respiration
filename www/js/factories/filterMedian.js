@@ -1,5 +1,5 @@
 angular.module('respiratoryFrequency').factory('FilterMedian', function () {
-    var windowSize = 10;
+    var windowSize = 20;
 
     function getWindowSize() {
         return windowSize;
