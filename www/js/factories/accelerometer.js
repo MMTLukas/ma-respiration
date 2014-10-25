@@ -52,7 +52,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
               "z": 0
             };
             //filteredData.push(logTimeMeasurement + ", " + FilterMedian.calculateMedian(unfilteredData));
-            filteredValue.z = FilterMedian.calculateMedian(unfilteredData);
+            filteredValue.z = FilterMedian.calculateMedian(unfilteredData.slice());
 
             unfilteredData.shift();
 
