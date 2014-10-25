@@ -1,4 +1,4 @@
-angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, Logger, FilterMedian) {
+angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, Logger, FilterMedian, FilterGaussian) {
   var countdownID;
   var buttonText = "Start";
   var isWatching;
@@ -10,6 +10,10 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var unfilteredData = [];
   var filteredData = [];
   var medianFilterWindowSize = FilterMedian.getWindowSize();
+
+  FilterGaussian.setSigma(50);
+  FilterGaussian.setK(37);
+  FilterGaussian.calculateNormFactor();
 
   var button = function () {
     if (!navigator.accelerometer) {
