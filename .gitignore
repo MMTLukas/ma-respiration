@@ -8,7 +8,8 @@ logs/
 # built application files
 *.apk
 *.ap_
-platforms/
+platforms/*
+plugins/*
 
 # files for the dex VM
 *.dex
