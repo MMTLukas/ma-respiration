@@ -22,16 +22,15 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
     if (isWatching) {
       buttonText = "Start";
-      //console.log("in if");
-      //Logger.logFilteredData(filteredData);
       navigator.accelerometer.clearWatch(isWatching);
       isWatching = null;
     } else {
       setStartTimestamp();
-      //console.log("in else");
       buttonText = "Stop";
       liveStorage = new Array();
       Logger.initializeStart();
+
+      var i = 0;
 
       isWatching = navigator.accelerometer.watchAcceleration(
         function (acceleration) {
@@ -47,25 +46,19 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
               "z": 0
             };
 
-            //filteredData.push(logTimeMeasurement + ", " + FilterMedian.calculateMedian(unfilteredData));
-            filteredValue.z = FilterMedian.calculateMedian(unfilteredData.slice());
-
+            filteredValue.z = FilterMedian.calculateMedian(unfilteredData);
             unfilteredData.shift();
+
             // Fill live storage only with values of 20 seconds
             liveStorage.push(filteredValue);
             if (liveStorage[0].timestamp < currentValues.timestamp - liveDurationInMs) {
               liveStorage.shift();
             }
           }
-
-          // collect data for 60 seconds
-          /*if (currentValues.timestamp - getStartTimestamp < Logger.getTimeFrame()) {
-            Logger.collectData(currentValues.z, logTimeMeasurement);
-          }*/
         }.bind(this), function () {
           alert("Beschleunigung konnte nicht abgefragt werden");
         }, {
-          frequency: 50
+          frequency: 65
         });
     }
   }
