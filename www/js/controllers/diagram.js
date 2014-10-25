@@ -1,4 +1,4 @@
-angular.module('respiratoryFrequency').controller('diagramCtrl', function ($scope, Accelerometer, $interval) {
+angular.module('respiratoryFrequency').controller('DiagramController', function ($scope, Accelerometer, $interval) {
   var HEIGHT = window.innerHeight - 172;
   var WIDTH = window.innerWidth;
 

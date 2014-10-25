@@ -88,10 +88,15 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return startTimestamp;
   }
 
+  var getButtonText = function() {
+    return buttonText;
+  }
+
   return {
     button: button,
-    buttonText: buttonText,
+    //buttonText: buttonText,
     getLatestZ: getLatestZ,
+    getButtonText: getButtonText,
     getLiveValues: getLiveValues,
     getStartTimestamp: getStartTimestamp
   }
