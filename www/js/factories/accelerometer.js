@@ -106,5 +106,4 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     getLiveValues: getLiveValues,
     getStartTimestamp: getStartTimestamp
   }
-})
-;
+});

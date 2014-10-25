@@ -11,6 +11,7 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
   }
 
   function calculateGaussianDistribution(x) {
+    //  there must be an error in this fomula...haven't found it yet...
     return 1.0/(sigma * Math.sqrt(2.0*Math.PI)) * Math.exp(-(x * x) / (2 * (sigma * sigma)));
   }
 
