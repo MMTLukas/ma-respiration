@@ -54,7 +54,7 @@ html, body {
     box-sizing: border-box;
 }
 
-.button:active, .background.active {
+.button:active, .button.active {
     background: #D35E5A;
 }
 
