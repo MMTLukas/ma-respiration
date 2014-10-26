@@ -17,7 +17,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
   var start = function () {
     setStartTimestamp();
-    buttonText = "Stop";
+    toggleText = "Stop";
     liveStorage = [];
     rowData = [];
     firstFilteredData = [];
@@ -72,7 +72,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   };
 
   var stop = function () {
-    buttonText = "Start";
+    toggleText = "Start";
     navigator.accelerometer.clearWatch(isWatching);
     isWatching = null;
   };
@@ -109,10 +109,13 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return startTimestamp;
   };
 
+  var getToggleButtonText = function() {
+    return toggleText;
+  }
+
   return {
     toggle: toggle,
-    toggleText: toggleText,
-    getLatestZ: getLatestZ,
+    getToggleButtonText: getToggleButtonText,
     getLiveValues: getLiveValues,
     getStartTimestamp: getStartTimestamp
   }

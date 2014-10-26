@@ -9,39 +9,54 @@
 
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
     <link rel="stylesheet" type="text/css" href="css/d3.css"/>
+
     <title>ESTIMATION OF RESPIRATORY</title>
 </head>
 <body>
-<div id="app">
-    <div id="menu" ng-controller="menuCtrl">
-        <div class="button half">
-            <a href="#">Live</a>
+
+<div class="ng-app">
+    <div ng-controller="NavigationController as navigationCtrl">
+        <div id="menu">
+            <div class="button" ng-class="{ active:navigationCtrl.isSelected(1) }">
+                <a href ng-click="navigationCtrl.selectTab(1)">Live</a>
+            </div>
+            <div class="button" ng-class="{ active:navigationCtrl.isSelected(2) }">
+                <a href ng-click="navigationCtrl.selectTab(2)">Archiv</a>
+            </div>
         </div>
-        <div class="button half">
-            <a href="#">Archiv</a>
+
+        <div class="viewLive" ng-show="navigationCtrl.isSelected(1)" ng-swipe-left="navigationCtrl.goToArchiv()">
+            <div id="data" ng-controller="DataController as dataCtrl">
+                <div class="button" ng-click="dataCtrl.toggle()">{{ toggleButtonText }}</div>
+            </div>
+
+            <div id="diagram"></div>
+
+            <div id="counter" ng-controller="CounterController as counterCtrl">
+                17
+            </div>
         </div>
-        <div class="button all" ng-click="toggle()">
-            <a href="#">{{toggleText}}</a>
+
+        <div class="viewArchiv" ng-show="navigationCtrl.isSelected(2)" ng-swipe-right="navigationCtrl.goToLiveView()">
+            <div id="archiv"></div>
         </div>
-    </div>
-    <div id="diagram"></div>
-    <div id="counter" ng-controller="counterCtrl">
-        17
     </div>
 </div>
 
+<!-- Angular files -->
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/libs/d3.js"></script>
-<script type="text/javascript" src="js/libs/angular.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-touch.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 
 <script type="text/javascript" src="js/controllers/counter.js"></script>
-<script type="text/javascript" src="js/controllers/menu.js"></script>
+<script type="text/javascript" src="js/controllers/navigation.js"></script>
+<script type="text/javascript" src="js/controllers/data.js"></script>
 <script type="text/javascript" src="js/factories/diagram.js"></script>
 <script type="text/javascript" src="js/factories/accelerometer.js"></script>
 <script type="text/javascript" src="js/factories/filterGaussian.js"></script>
 <script type="text/javascript" src="js/factories/filterMedian.js"></script>
 <script type="text/javascript" src="js/factories/filterAverage.js"></script>
-
 </body>
 </html>

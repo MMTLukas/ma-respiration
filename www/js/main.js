@@ -18,4 +18,4 @@ window.respiratoryFrequency = {
   }
 }
 
-angular.module('respiratoryFrequency', []);
+angular.module('respiratoryFrequency', ['ngTouch']);

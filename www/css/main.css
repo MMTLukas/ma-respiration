@@ -43,6 +43,53 @@ html, body {
     border-right: 1px solid #333;
 }
 
+/**
+ *
+ */
+
+#data, #counter {
+    width: 100%;
+    background: #F52C36;
+    text-align: center;
+    color: white;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+#counter {
+    padding: 10px 0 10px 0;
+    position: fixed;
+    font-size: 52px;
+    line-height: 52px;
+    bottom: 0;
+}
+#data {
+    font-size: 32px;
+    line-height: 50px;
+    float: left;
+    text-align: center;
+    height:50px;
+}
+#data .accelerator {
+    width: 120px;
+    float: left;
+    text-align: left;
+}
+#data .accelerator {
+    float: left;
+    padding: 0px 10px 0px 10px;
+}
+#data .button{
+    height:50px;
+    line-height:50px;
+    border-top: 1px solid #333;
+}
+#data .button a{
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .button {
     background: #F52C36;
     width: 100%;
@@ -93,4 +140,150 @@ html, body {
     font-size: 52px;
     line-height: 52px;
     bottom: 0;
+}
+
+/**
+ * Archiv Tab at top
+ */
+
+.view_archiv {
+    width: 100%;
+    min-height: 100px;
+    max-height: 100%;
+    background-color: azure;
+}
+
+#archiv {
+    width: 100%;
+    height: 100%;
+    min-height: 800px;
+    max-height: 100%;
+    height: auto;
+}
+
+
+
+
+/**
+* NEW
+*/
+
+#menu {
+    width: 100%;
+    height: 50px;
+    float: left;
+}
+
+.button {
+    background: #F52C36;
+    width:100%;
+    color: white;
+    float: left;
+    font-size: 32px;
+    text-align: center;
+    line-height: 50px;
+    vertical-align: middle;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.button:active {
+    background: #ED535A;
+}
+
+.button a:link, .button a:visited {
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    height: 100%;
+    float: left;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#menu .button{
+    width: 50%;
+}
+
+#menu .button:first-child {
+    border-right: 1px solid #333;
+}
+
+#diagram img {
+    max-width: 90%;
+    width: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#data, #counter {
+    width: 100%;
+    background: #F52C36;
+    text-align: center;
+    color: white;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#counter {
+    padding: 10px 0 10px 0;
+    position: fixed;
+    font-size: 52px;
+    line-height: 52px;
+    bottom: 0;
+}
+
+#data {
+    font-size: 32px;
+    line-height: 50px;
+    float: left;
+    text-align: center;
+    height:50px;
+}
+
+#data .accelerator {
+    width: 120px;
+    float: left;
+    text-align: left;
+}
+
+#data .accelerator {
+    float: left;
+    padding: 0px 10px 0px 10px;
+}
+
+#data .button{
+    height:50px;
+    width: 100%;
+    line-height:50px;
+    border-top: 1px solid #333;
+}
+
+#data .button a{
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.viewArchiv {
+    width: 100%;
+    background-color: azure;
+}
+
+#archiv {
+    width: 100%;
+    height: 100%;
+    min-height: 800px;
+    max-height: 100%;
+    height: auto;
 }
