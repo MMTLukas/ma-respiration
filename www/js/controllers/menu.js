@@ -1,6 +1,7 @@
 angular.module('respiratoryFrequency').controller('MenuController', function ($scope) {
   this.tab = 1;
 
+  // Methods for the menu-buttons
   this.selectTab = function(setTab) {
     this.tab = setTab;
   };
@@ -9,6 +10,7 @@ angular.module('respiratoryFrequency').controller('MenuController', function ($s
     return this.tab === checkTab;
   };
 
+  // Methods for the swipe-function
   this.goToLiveView = function() {
     this.selectTab(1);
   };
