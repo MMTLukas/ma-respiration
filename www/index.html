@@ -4,7 +4,6 @@
     <meta charset="utf-8"/>
     <meta name="format-detection" content="telephone=no"/>
     <meta name="msapplication-tap-highlight" content="no"/>
-    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
     <meta name="viewport"
           content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi"/>
 
@@ -13,17 +12,19 @@
     <title>ESTIMATION OF RESPIRATORY</title>
 </head>
 <body>
-<div class="app">
+<div id="app">
     <div id="menu" ng-controller="menuCtrl">
-        <div class="button"><a href="#">Live</a></div>
-        <div class="button"><a href="#">Archiv</a></div>
+        <div class="button half">
+            <a href="#">Live</a>
+        </div>
+        <div class="button half">
+            <a href="#">Archiv</a>
+        </div>
+        <div class="button all" ng-click="toggle()">
+            <a href="#">{{toggleText}}</a>
+        </div>
     </div>
-    <div id="data" ng-controller="dataCtrl">
-        <div class="button" ng-click="button()"><a href="#">{{buttonText}}</a></div>
-    </div>
-    <div id="diagram" ng-controller="diagramCtrl">
-
-    </div>
+    <div id="diagram"></div>
     <div id="counter" ng-controller="counterCtrl">
         17
     </div>
@@ -35,14 +36,12 @@
 <script type="text/javascript" src="js/main.js"></script>
 
 <script type="text/javascript" src="js/controllers/counter.js"></script>
-<script type="text/javascript" src="js/controllers/data.js"></script>
-<script type="text/javascript" src="js/controllers/diagram.js"></script>
 <script type="text/javascript" src="js/controllers/menu.js"></script>
-<script type="text/javascript" src="js/factories/logger.js"></script>
+<script type="text/javascript" src="js/factories/diagram.js"></script>
 <script type="text/javascript" src="js/factories/accelerometer.js"></script>
 <script type="text/javascript" src="js/factories/filterGaussian.js"></script>
 <script type="text/javascript" src="js/factories/filterMedian.js"></script>
-<script type="text/javascript" src="js/factories/filterMovingAverage.js"></script>
+<script type="text/javascript" src="js/factories/filterAverage.js"></script>
 
 </body>
 </html>

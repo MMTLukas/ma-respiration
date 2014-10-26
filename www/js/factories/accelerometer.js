@@ -1,17 +1,83 @@
-angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, Logger, FilterMedian) {
+angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, FilterMedian, FilterAverage, FilterGaussian) {
   var countdownID;
-  var buttonText = "Start";
+  var toggleText = "Start";
   var isWatching;
   var liveStorage = [];
   var liveDurationInMs = 20000;
+  var frequencyInMs = 65;
   var startTimestamp = "";
 
-  // Medianfilter
-  var unfilteredData = [];
-  var filteredData = [];
-  var medianFilterWindowSize = FilterMedian.getWindowSize();
+  var rowData = [];
+  var firstFilteredData = [];
+  var secondFilteredData = [];
 
-  var button = function () {
+  var medianWindowSize = FilterMedian.getWindowSize();
+  var averageWindowSize = FilterAverage.getWindowSize();
+  var gaussianWindowSize = FilterGaussian.getWindowSize();
+
+  var start = function () {
+    setStartTimestamp();
+    buttonText = "Stop";
+    liveStorage = [];
+    rowData = [];
+    firstFilteredData = [];
+    secondFilteredData = [];
+
+    isWatching = navigator.accelerometer.watchAcceleration(
+      function (acceleration) {
+
+        //Currently only for development
+        //TODO: Display spinning wheal for user
+        if (rowData.length <= 0) {
+          console.log("It will take " +
+          (frequencyInMs * medianWindowSize +
+          frequencyInMs * averageWindowSize +
+          frequencyInMs * gaussianWindowSize) +
+          " ms till data will be displayed");
+        }
+
+        var currentData = {
+          "timestamp": acceleration.timestamp,
+          "z": acceleration.z
+        };
+        rowData.push(currentData.z);
+
+        if (rowData.length >= medianWindowSize) {
+          currentData.z = FilterMedian.calculate(rowData);
+          firstFilteredData.push(currentData.z);
+          rowData.shift();
+        }
+
+        if (firstFilteredData.length >= averageWindowSize) {
+          currentData.z = FilterAverage.calculate(firstFilteredData);
+          firstFilteredData.shift();
+          secondFilteredData.push(currentData.z);
+        }
+
+        //TODO: Change median filter to gaussian filter
+        if (secondFilteredData.length >= gaussianWindowSize) {
+          currentData.z = FilterMedian.calculate(secondFilteredData);
+          secondFilteredData.shift();
+          liveStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
+        }
+
+        if (liveStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
+          liveStorage.shift();
+        }
+      }.bind(this), function () {
+        alert("Beschleunigung konnte nicht abgefragt werden");
+      }, {
+        frequency: frequencyInMs
+      });
+  };
+
+  var stop = function () {
+    buttonText = "Start";
+    navigator.accelerometer.clearWatch(isWatching);
+    isWatching = null;
+  };
+
+  var toggle = function () {
     if (!navigator.accelerometer) {
       //Because alert triggers "$apply already in progress" we use setTimeout(0)
       setTimeout(function () {
@@ -21,79 +87,33 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     }
 
     if (isWatching) {
-      buttonText = "Start";
-      navigator.accelerometer.clearWatch(isWatching);
-      isWatching = null;
+      stop();
     } else {
-      setStartTimestamp();
-      buttonText = "Stop";
-      liveStorage = new Array();
-      Logger.initializeStart();
-
-      var i = 0;
-
-      isWatching = navigator.accelerometer.watchAcceleration(
-        function (acceleration) {
-          var currentValues = {
-            "timestamp": acceleration.timestamp,
-            "z": Math.floor(acceleration.z * 100) / 100
-          };
-          unfilteredData.push(currentValues.z);
-
-          if (unfilteredData.length >= medianFilterWindowSize) {
-            var filteredValue = {
-              "timestamp": acceleration.timestamp,
-              "z": 0
-            };
-
-            filteredValue.z = FilterMedian.calculateMedian(unfilteredData);
-            unfilteredData.shift();
-
-            // Fill live storage only with values of 20 seconds
-            liveStorage.push(filteredValue);
-            if (liveStorage[0].timestamp < currentValues.timestamp - liveDurationInMs) {
-              liveStorage.shift();
-            }
-          }
-        }.bind(this), function () {
-          alert("Beschleunigung konnte nicht abgefragt werden");
-        }, {
-          frequency: 65
-        });
+      start();
     }
-  }
-
-  // calculate the time pased from the beginning
-  var getTimeSinceStart = function(currentValues) {
-    var timeSinceStart = (currentValues.timestamp - getStartTimestamp()),
-      timestampInMinutes = new Date(timeSinceStart).getMinutes(),
-      timestampInSeconds = new Date(timeSinceStart).getSeconds(),
-      timestampInMilliseconds = new Date(timeSinceStart).getMilliseconds();
-      return (timestampInMinutes + "min " + timestampInSeconds + "s " + timestampInMilliseconds + "ms");
-  }
+  };
 
   var getLatestZ = function () {
     return liveStorage[liveStorage.length - 1]["z"] || 0;
-  }
+  };
 
   var getLiveValues = function () {
     return liveStorage;
-  }
+  };
 
-  var setStartTimestamp = function() {
+  var setStartTimestamp = function () {
     startTimestamp = Date.now();
-  }
+  };
 
-  var getStartTimestamp = function() {
+  var getStartTimestamp = function () {
     return startTimestamp;
-  }
+  };
 
   return {
-    button: button,
-    buttonText: buttonText,
+    toggle: toggle,
+    toggleText: toggleText,
     getLatestZ: getLatestZ,
     getLiveValues: getLiveValues,
     getStartTimestamp: getStartTimestamp
   }
-})
-;
+});

@@ -1,3 +1,7 @@
+/**
+ *  Default options for html, body and app container
+ */
+
 html, body {
     -webkit-touch-callout: none; /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none; /* prevent webkit from resizing text to fit */
@@ -11,31 +15,37 @@ html, body {
     width: 100%;
 }
 
-/* Portrait layout (default) */
-.app {
+#app {
     height: 100%;
     width: 100%;
 }
 
-/* Landscape layout (with min-width)
-@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
-    .app {
-        background-position:left center;
-        padding:75px 0px 75px 170px;  /* padding-top + padding-bottom + text area = image height */
-/*margin:-90px 0px 0px -198px;  /* offset vertical: half of image height */
-/* offset horizontal: half of image width and text area width */
-/*}
-}*/
+/**
+ *  Menu with buttons at top
+ */
 
 #menu {
     width: 100%;
-    height: 50px;
-    float: left;
+    height: 100px;
+}
+
+#menu .half {
+    float:left;
+    width: 50%;
+}
+
+#menu .all {
+    border-top: 1px solid #333;
+    width: 100%;
+}
+
+#menu .half:first-child {
+    border-right: 1px solid #333;
 }
 
 .button {
     background: #F52C36;
-    width:100%;
+    width: 100%;
     color: white;
     float: left;
     font-size: 32px;
@@ -64,26 +74,11 @@ html, body {
     box-sizing: border-box;
 }
 
-#menu .button{
-    width: 50%;
-}
+/**
+ *  Respiratory frequency counter at bottom
+ */
 
-#menu .button:first-child {
-    border-right: 1px solid #333;
-}
-
-#diagram img {
-    max-width: 90%;
-    width: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-}
-
-#data, #counter {
+#counter {
     width: 100%;
     background: #F52C36;
     text-align: center;
@@ -92,43 +87,10 @@ html, body {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-}
 
-#counter {
     padding: 10px 0 10px 0;
     position: fixed;
     font-size: 52px;
     line-height: 52px;
     bottom: 0;
-}
-
-#data {
-    font-size: 32px;
-    line-height: 50px;
-    float: left;
-    text-align: center;
-    height:50px;
-}
-
-#data .accelerator {
-    width: 120px;
-    float: left;
-    text-align: left;
-}
-
-#data .accelerator {
-    float: left;
-    padding: 0px 10px 0px 10px;
-}
-
-#data .button{
-    height:50px;
-    line-height:50px;
-    border-top: 1px solid #333;
-}
-
-#data .button a{
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
 }

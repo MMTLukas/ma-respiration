@@ -5,7 +5,7 @@ angular.module('respiratoryFrequency').factory('FilterMedian', function () {
     return windowSize;
   }
 
-  function calculateMedian(unfilteredValues) {
+  function calculate(unfilteredValues) {
     var tmpUnfilteredValues = unfilteredValues.slice();
 
     tmpUnfilteredValues.sort(function (a, b) {
@@ -23,7 +23,7 @@ angular.module('respiratoryFrequency').factory('FilterMedian', function () {
   }
 
   return {
-    calculateMedian: calculateMedian,
+    calculate: calculate,
     getWindowSize: getWindowSize
   }
 });
