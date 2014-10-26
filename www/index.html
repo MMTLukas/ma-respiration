@@ -14,7 +14,7 @@
     <title>ESTIMATION OF RESPIRATORY</title>
 </head>
 <body>
-<div class="app">
+<div class="ng-app">
     <div id="menu" ng-controller="MenuController as menuCtrl">
         <div class="nav nav-respiration">
             <div class="button" ng-class="{ active:menuCtrl.isSelected(1) }">
@@ -23,7 +23,7 @@
             <div class="button" ng-class="{ active:menuCtrl.isSelected(2) }">
                 <a href ng-click="menuCtrl.selectTab(2)">Archiv</a>
             </div>
-            <div class="view_live" ng-show="menuCtrl.isSelected(1)">
+            <div class="view_live" ng-show="menuCtrl.isSelected(1)" ng-swipe-right="menuCtrl.goToArchiv()">
                 <div id="data" ng-controller="DataController as dataCtrl">
                     <div class="button" ng-click="dataCtrl.button()">{{ startStopButtonText }}</div>
                 </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="view_archiv" ng-show="menuCtrl.isSelected(2)">
+            <div class="view_archiv" ng-show="menuCtrl.isSelected(2)" ng-swipe-left="menuCtrl.goToLiveView()">
                 <div id="archiv">
                 </div>
 
