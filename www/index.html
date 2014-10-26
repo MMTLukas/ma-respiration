@@ -17,10 +17,10 @@
 <div class="ng-app">
     <div ng-controller="NavigationController as navigationCtrl">
         <div id="menu">
-            <div class="button" ng-class="{ active:navigationCtrl.isSelected(1) }">
+            <div class="button half" ng-class="{ active:navigationCtrl.isSelected(1) }">
                 <a href ng-click="navigationCtrl.selectTab(1)">Live</a>
             </div>
-            <div class="button" ng-class="{ active:navigationCtrl.isSelected(2) }">
+            <div class="button half" ng-class="{ active:navigationCtrl.isSelected(2) }">
                 <a href ng-click="navigationCtrl.selectTab(2)">Archiv</a>
             </div>
         </div>

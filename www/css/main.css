@@ -13,6 +13,8 @@ html, body {
     padding: 0;
     height: 100%;
     width: 100%;
+
+    color: #FFCA5C;
 }
 
 #app {
@@ -26,7 +28,7 @@ html, body {
 
 #menu {
     width: 100%;
-    height: 100px;
+    height: 50px;
 }
 
 #menu .half {
@@ -34,66 +36,13 @@ html, body {
     width: 50%;
 }
 
-#menu .all {
-    border-top: 1px solid #333;
-    width: 100%;
-}
-
 #menu .half:first-child {
-    border-right: 1px solid #333;
-}
-
-/**
- *
- */
-
-#data, #counter {
-    width: 100%;
-    background: #F52C36;
-    text-align: center;
-    color: white;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-#counter {
-    padding: 10px 0 10px 0;
-    position: fixed;
-    font-size: 52px;
-    line-height: 52px;
-    bottom: 0;
-}
-#data {
-    font-size: 32px;
-    line-height: 50px;
-    float: left;
-    text-align: center;
-    height:50px;
-}
-#data .accelerator {
-    width: 120px;
-    float: left;
-    text-align: left;
-}
-#data .accelerator {
-    float: left;
-    padding: 0px 10px 0px 10px;
-}
-#data .button{
-    height:50px;
-    line-height:50px;
-    border-top: 1px solid #333;
-}
-#data .button a{
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+    border-right: 1px solid #555;
 }
 
 .button {
-    background: #F52C36;
-    width: 100%;
-    color: white;
+    background: #F26C68;
+    width:100%;
     float: left;
     font-size: 32px;
     text-align: center;
@@ -105,13 +54,14 @@ html, body {
     box-sizing: border-box;
 }
 
-.button:active {
-    background: #ED535A;
+.button:active, .background.active {
+    background: #D35E5A;
 }
 
 .button a:link, .button a:visited {
     text-decoration: none;
-    color: white;
+    color: #FFCA5C;
+    color: #FFCA5C;
     width: 100%;
     height: 100%;
     float: left;
@@ -125,110 +75,10 @@ html, body {
  *  Respiratory frequency counter at bottom
  */
 
-#counter {
-    width: 100%;
-    background: #F52C36;
-    text-align: center;
-    color: white;
-
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-
-    padding: 10px 0 10px 0;
-    position: fixed;
-    font-size: 52px;
-    line-height: 52px;
-    bottom: 0;
-}
-
-/**
- * Archiv Tab at top
- */
-
-.view_archiv {
-    width: 100%;
-    min-height: 100px;
-    max-height: 100%;
-    background-color: azure;
-}
-
-#archiv {
-    width: 100%;
-    height: 100%;
-    min-height: 800px;
-    max-height: 100%;
-    height: auto;
-}
-
-
-
-
-/**
-* NEW
-*/
-
-#menu {
-    width: 100%;
-    height: 50px;
-    float: left;
-}
-
-.button {
-    background: #F52C36;
-    width:100%;
-    color: white;
-    float: left;
-    font-size: 32px;
-    text-align: center;
-    line-height: 50px;
-    vertical-align: middle;
-
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.button:active {
-    background: #ED535A;
-}
-
-.button a:link, .button a:visited {
-    text-decoration: none;
-    color: white;
-    width: 100%;
-    height: 100%;
-    float: left;
-
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-#menu .button{
-    width: 50%;
-}
-
-#menu .button:first-child {
-    border-right: 1px solid #333;
-}
-
-#diagram img {
-    max-width: 90%;
-    width: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-}
-
 #data, #counter {
     width: 100%;
-    background: #F52C36;
+    background: #F26C68;
     text-align: center;
-    color: white;
 
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -242,6 +92,10 @@ html, body {
     line-height: 52px;
     bottom: 0;
 }
+
+/**
+ * Live view - button
+ */
 
 #data {
     font-size: 32px;
@@ -266,7 +120,7 @@ html, body {
     height:50px;
     width: 100%;
     line-height:50px;
-    border-top: 1px solid #333;
+    border-top: 1px solid #555;
 }
 
 #data .button a{
@@ -274,6 +128,10 @@ html, body {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+/**
+ * Archiv Tab at top
+ */
 
 .viewArchiv {
     width: 100%;
