@@ -13,7 +13,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
   FilterGaussian.setSigma(50);
   FilterGaussian.setK(37);
-  FilterGaussian.calculateNormFactor();
+  FilterGaussian.calculateCoefficients();
 
   var button = function () {
     if (!navigator.accelerometer) {
