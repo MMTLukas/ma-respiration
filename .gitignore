@@ -9,7 +9,9 @@ logs/
 *.apk
 *.ap_
 platforms/*
+!platforms/android/res/
 plugins/*
+
 
 # files for the dex VM
 *.dex
@@ -19,7 +21,7 @@ plugins/*
 
 # generated files - android project subfolder
 Android/bin/
-Android/gen/
+Android/generate
 Android/assets/
 
 # generated files
