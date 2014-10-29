@@ -13,7 +13,11 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
   var medianWindowSize = FilterMedian.getWindowSize();
   var averageWindowSize = FilterAverage.getWindowSize();
-  var gaussianWindowSize = FilterGaussian.getWindowSize();
+  var gaussianWindowSize = 20; //TODO: There is no window size?
+
+  FilterGaussian.setSigma(50);
+  FilterGaussian.setK(37);
+  FilterGaussian.calculateCoefficients();
 
   var start = function () {
     setStartTimestamp();
