@@ -11,26 +11,25 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
     k = value;
   }
 
-  function calculateGaussianDistribution(x) {
-    //  there must be an error in this fomula...haven't found it yet...
+  function calculateGaussianDistribution(x, sigma) {
     return (1/(sigma * Math.sqrt(2*Math.PI))) * Math.exp(-(x * x) / (2 * (sigma * sigma)));
   }
 
-  function calculateNormFactor() {
-    var normFactor = 2 + calculateGaussianDistribution(0) / calculateGaussianDistribution(k)
+  function calculateNormFactor(k, sigma) {
+    var normFactor = 2 + calculateGaussianDistribution(0, sigma) / calculateGaussianDistribution(k, sigma)
     var tempNormFactor = 0;
 
     for(var i = 1; i < k - 1; i++) {
-      tempNormFactor = tempNormFactor + (calculateGaussianDistribution(i) / calculateGaussianDistribution(k));
+      tempNormFactor = tempNormFactor + (calculateGaussianDistribution(i, sigma) / calculateGaussianDistribution(k, sigma));
     }
 
     normFactor = normFactor + 2 * tempNormFactor;
     return normFactor;
   }
 
-  function calculateCoefficients() {
-    var normFactor = calculateNormFactor();
-
+  function calculateCoefficients(k, sigma) {
+    var normFactor = calculateNormFactor(k, sigma);
+    var coefficients = [];
     for(var i = 0; i < 2 * k; i++) {
       if(i === 0 || i === 2 * k) {
         coefficients.push(1 / normFactor);
@@ -45,46 +44,37 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
         coefficients.push((calculateGaussianDistribution(i - k) / calculateGaussianDistribution(k)) / normFactor);
       }
     }
+    return coefficients;
   }
 
   function calculateFilteredArray(data) {
     var filteredData = [];
     for(var i = 0; i < data.length; i++) {
       var value = 0;
-      for(var j = 0; j < i - k; j ++) {
-        
+      for(var j = i-k; j < i + k; j ++) {
+        var coefficientsIndex = (j - i) + coefficients.length / 2;
+        // coefficients-Array does not overlap the data array
+        if(j >= 0 && j < data.length) {
+          value += data[j] * coefficients[coefficientsIndex];
+        }
+        // calculate filtered data when the coefficients-Array overlap the data-Array on the left side
+        else if(j < 0) {
+          value += data[j * (-1)] * coefficients[coefficientsIndex];
+        }
+        // calculate filtered data when the coefficients-Array overlap the data-Array on the right side
+        else {
+          value += data[2 * data.length - j -2] * coefficients[coefficientsIndex];
+        }
       }
+      filteredData.push(value);
     }
-
-
-
-
-
-    /*
-     def calculateFilteredArray(dataArray, coefficients)
-      filteredData = Array.new
-      dataArray.each_with_index do | data, i |
-        value = 0
-        for j in i-k..i+k
-          coefficientsIndex = (j - i) + coefficients.length / 2
-          if j >= 0 && j < dataArray.length
-            value += dataArray[j] * coefficients[coefficientsIndex]
-          elsif j < 0
-            value += dataArray[j*(-1)] * coefficients[coefficientsIndex]
-          elsif j >= dataArray.length
-            value += dataArray[2 * (dataArray.length) - j - 2] * coefficients[coefficientsIndex]
-          end
-        end
-        filteredData.push value
-      end
-      filteredData
-     end
-    */
+    return filteredData;
   }
 
   return {
     setSigma: setSigma,
     setK: setK,
-    calculateCoefficients: calculateCoefficients
+    calculateCoefficients: calculateCoefficients,
+    calculateFilteredArray: calculateFilteredArray
   }
 });
