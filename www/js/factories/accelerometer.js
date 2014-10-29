@@ -7,23 +7,26 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var frequencyInMs = 65;
   var startTimestamp = "";
 
-  var rowData = [];
+  var rawData = [];
   var firstFilteredData = [];
   var secondFilteredData = [];
 
+  FilterGaussian.setSigma(3);
+  FilterGaussian.setK(7);
+  FilterGaussian.calculateCoefficients();
+
   var medianWindowSize = FilterMedian.getWindowSize();
   var averageWindowSize = FilterAverage.getWindowSize();
-  var gaussianWindowSize = 20; //TODO: There is no window size?
+  var gaussianWindowSize = 2 * FilterGaussian.getK();
 
-  FilterGaussian.setSigma(50);
-  FilterGaussian.setK(37);
-  FilterGaussian.calculateCoefficients();
+
+
 
   var start = function () {
     setStartTimestamp();
     toggleText = "Stop";
     liveStorage = [];
-    rowData = [];
+    rawData = [];
     firstFilteredData = [];
     secondFilteredData = [];
 
@@ -32,7 +35,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
         //Currently only for development
         //TODO: Display spinning wheal for user
-        if (rowData.length <= 0) {
+        if (rawData.length <= 0) {
           console.log("It will take " +
           (frequencyInMs * medianWindowSize +
           frequencyInMs * averageWindowSize +
@@ -44,13 +47,15 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
           "timestamp": acceleration.timestamp,
           "z": acceleration.z
         };
-        rowData.push(currentData.z);
+        rawData.push(currentData.z);
 
-        if (rowData.length >= medianWindowSize) {
-          currentData.z = FilterMedian.calculate(rowData);
+
+        if (rawData.length >= medianWindowSize) {
+          currentData.z = FilterMedian.calculate(rawData);
           firstFilteredData.push(currentData.z);
-          rowData.shift();
+          rawData.shift();
         }
+
 
         if (firstFilteredData.length >= averageWindowSize) {
           currentData.z = FilterAverage.calculate(firstFilteredData);
@@ -58,9 +63,8 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
           secondFilteredData.push(currentData.z);
         }
 
-        //TODO: Change median filter to gaussian filter
         if (secondFilteredData.length >= gaussianWindowSize) {
-          currentData.z = FilterMedian.calculate(secondFilteredData);
+          currentData.z = FilterGaussian.calculateFilteredArray(secondFilteredData);
           secondFilteredData.shift();
           liveStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
         }
