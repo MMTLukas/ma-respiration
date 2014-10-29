@@ -10,12 +10,16 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
     k = value;
   }
 
-  function calculateGaussianDistribution(x, sigma) {
+  function getK() {
+    return k;
+  }
+
+  function calculateGaussianDistribution(x) {
     return (1/(sigma * Math.sqrt(2*Math.PI))) * Math.exp(-(x * x) / (2 * (sigma * sigma)));
   }
 
-  function calculateNormFactor(k, sigma) {
-    var normFactor = 2 + calculateGaussianDistribution(0, sigma) / calculateGaussianDistribution(k, sigma)
+  function calculateNormFactor(k) {
+    var normFactor = 2 + calculateGaussianDistribution(0, sigma) / calculateGaussianDistribution(k, sigma);
     var tempNormFactor = 0;
 
     for(var i = 1; i < k - 1; i++) {
@@ -27,8 +31,7 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
   }
 
   function calculateCoefficients() {
-    var normFactor = calculateNormFactor(k, sigma);
-    var coefficients = [];
+    var normFactor = calculateNormFactor(k);
     for(var i = 0; i < 2 * k; i++) {
       if(i === 0 || i === 2 * k) {
         coefficients.push(1 / normFactor);
@@ -43,13 +46,11 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
         coefficients.push((calculateGaussianDistribution(i - k) / calculateGaussianDistribution(k)) / normFactor);
       }
     }
-    return coefficients;
   }
 
   function calculateFilteredArray(data) {
-    var filteredData = [];
+    var value = 0;
     for(var i = 0; i < data.length; i++) {
-      var value = 0;
       for(var j = i-k; j < i + k; j ++) {
         var coefficientsIndex = (j - i) + coefficients.length / 2;
         // coefficients-Array does not overlap the data array
@@ -65,14 +66,14 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
           value += data[2 * data.length - j -2] * coefficients[coefficientsIndex];
         }
       }
-      filteredData.push(value);
     }
-    return filteredData;
+    return value;
   }
 
   return {
     setSigma: setSigma,
     setK: setK,
+    getK: getK,
     calculateCoefficients: calculateCoefficients,
     calculateFilteredArray: calculateFilteredArray
   }
