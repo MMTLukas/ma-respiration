@@ -50,7 +50,10 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
 
   function calculateFilteredArray(data) {
     var value = 0;
+
+    /*
     for(var i = 0; i < data.length; i++) {
+
       for(var j = i-k; j < i + k; j ++) {
         var coefficientsIndex = (j - i) + coefficients.length / 2;
         // coefficients-Array does not overlap the data array
@@ -67,7 +70,14 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
         }
       }
     }
+
+*/
+    for(var i = 0; i < k * 2; i++) {
+      value += data[i] * coefficients[i];
+    }
     return value;
+
+
   }
 
   return {
