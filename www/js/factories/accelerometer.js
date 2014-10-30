@@ -19,9 +19,6 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var averageWindowSize = FilterAverage.getWindowSize();
   var gaussianWindowSize = 2 * FilterGaussian.getK();
 
-
-
-
   var start = function () {
     FrequencyCalculator.init();
     setFrequencyCounter("Atemfrequenz: " + "-" + "x /min");
@@ -39,10 +36,10 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         //TODO: Display spinning wheal for user
         if (rawData.length <= 0) {
           console.log("It will take " +
-          (frequencyInMs * medianWindowSize +
-          frequencyInMs * averageWindowSize +
-          frequencyInMs * gaussianWindowSize) +
-          " ms till data will be displayed");
+            (frequencyInMs * medianWindowSize +
+              frequencyInMs * averageWindowSize +
+              frequencyInMs * gaussianWindowSize) +
+            " ms till data will be displayed");
         }
 
         var currentData = {
@@ -100,6 +97,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     }
 
     if (isWatching) {
+      //sinus();
       stop();
     } else {
       start();
@@ -122,12 +120,28 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return startTimestamp;
   };
 
-  var getToggleButtonText = function() {
+  var getToggleButtonText = function () {
     return toggleText;
+  }
+
+  var sinus = function() {
+    var sinusValues = [];
+    for (var i = 0; i < 100; i++) {
+      var help = [{"z": Math.sin(i), "timestamp": sinusValues.length}];
+      //console.log(help[0].z);
+      sinusValues.push(help);
+
+      if(i > 1) {
+        FrequencyCalculator.calculateFrequency(sinusValues);
+      }
+    }
+    //console.log(sinusValues);
+    //return sinusValues;
   }
 
   return {
     toggle: toggle,
+    sinus: sinus,
     getToggleButtonText: getToggleButtonText,
     getLiveValues: getLiveValues,
     getStartTimestamp: getStartTimestamp
