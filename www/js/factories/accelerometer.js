@@ -23,6 +23,8 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
 
   var start = function () {
+    FrequencyCalculator.init();
+    setFrequencyCounter("Atemfrequenz: " + "-" + "x /min");
     setStartTimestamp();
     toggleText = "Stop";
     liveStorage = [];
