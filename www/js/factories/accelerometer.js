@@ -10,6 +10,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var rawData = [];
   var firstFilteredData = [];
   var secondFilteredData = [];
+  var gaussianFilteredData = [];
 
   FilterGaussian.setSigma(3);
   FilterGaussian.setK(7);
@@ -47,7 +48,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
           "timestamp": acceleration.timestamp,
           "z": acceleration.z
         };
-        rawData.push(currentData.z);
+        rawData.push(currentData);
 
 
         if (rawData.length >= medianWindowSize) {
@@ -63,10 +64,14 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
           secondFilteredData.push(currentData.z);
         }
 
-        if (secondFilteredData.length >= gaussianWindowSize) {
-          currentData.z = FilterGaussian.calculateFilteredArray(secondFilteredData);
+        if (secondFilteredData.length >= gaussianWindowSize && gaussianFilteredData.length == 0) {
+          gaussianFilteredData = gaussianFilteredData.concat(FilterGaussian.calculateFilteredArray(secondFilteredData.slice()));
           secondFilteredData.shift();
-          liveStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
+        }
+
+        if(gaussianFilteredData.length > 0) {
+          liveStorage.push({"timestamp": currentData.timestamp, "z": gaussianFilteredData[0]});
+          gaussianFilteredData.shift();
         }
 
         if (liveStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
