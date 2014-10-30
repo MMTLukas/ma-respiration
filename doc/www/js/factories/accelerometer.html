@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><head><title>www/js/factories/accelerometer</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../"><meta name="groc-document-path" content="www/js/factories/accelerometer"><meta name="groc-project-path" content="www/js/factories/accelerometer.js"><link rel="stylesheet" type="text/css" media="all" href="../../../assets/style.css"><script type="text/javascript" src="../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">www/js/factories/accelerometer.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">angular.module(<span class="hljs-string">'respiratoryFrequency'</span>).factory(<span class="hljs-string">'Accelerometer'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($timeout, FilterMedian, FilterAverage, FilterGaussian)</span> {</span>
+  <span class="hljs-keyword">var</span> countdownID;
+  <span class="hljs-keyword">var</span> toggleText = <span class="hljs-string">"Start"</span>;
+  <span class="hljs-keyword">var</span> isWatching;
+  <span class="hljs-keyword">var</span> liveStorage = [];
+  <span class="hljs-keyword">var</span> liveDurationInMs = <span class="hljs-number">20000</span>;
+  <span class="hljs-keyword">var</span> frequencyInMs = <span class="hljs-number">65</span>;
+  <span class="hljs-keyword">var</span> startTimestamp = <span class="hljs-string">""</span>;
+
+  <span class="hljs-keyword">var</span> rawData = [];
+  <span class="hljs-keyword">var</span> firstFilteredData = [];
+  <span class="hljs-keyword">var</span> secondFilteredData = [];
+
+  FilterGaussian.setSigma(<span class="hljs-number">3</span>);
+  FilterGaussian.setK(<span class="hljs-number">7</span>);
+  FilterGaussian.calculateCoefficients();
+
+  <span class="hljs-keyword">var</span> medianWindowSize = FilterMedian.getWindowSize();
+  <span class="hljs-keyword">var</span> averageWindowSize = FilterAverage.getWindowSize();
+  <span class="hljs-keyword">var</span> gaussianWindowSize = <span class="hljs-number">2</span> * FilterGaussian.getK();
+
+
+
+
+  <span class="hljs-keyword">var</span> start = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    setStartTimestamp();
+    toggleText = <span class="hljs-string">"Stop"</span>;
+    liveStorage = [];
+    rawData = [];
+    firstFilteredData = [];
+    secondFilteredData = [];
+
+    isWatching = navigator.accelerometer.watchAcceleration(
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(acceleration)</span> {</span>
+
+        <span class="hljs-comment">//Currently only for development</span>
+        <span class="hljs-comment">//TODO: Display spinning wheal for user</span>
+        <span class="hljs-keyword">if</span> (rawData.length &lt;= <span class="hljs-number">0</span>) {
+          console.log(<span class="hljs-string">"It will take "</span> +
+          (frequencyInMs * medianWindowSize +
+          frequencyInMs * averageWindowSize +
+          frequencyInMs * gaussianWindowSize) +
+          <span class="hljs-string">" ms till data will be displayed"</span>);
+        }
+
+        <span class="hljs-keyword">var</span> currentData = {
+          <span class="hljs-string">"timestamp"</span>: acceleration.timestamp,
+          <span class="hljs-string">"z"</span>: acceleration.z
+        };
+        rawData.push(currentData.z);
+
+
+        <span class="hljs-keyword">if</span> (rawData.length &gt;= medianWindowSize) {
+          currentData.z = FilterMedian.calculate(rawData);
+          firstFilteredData.push(currentData.z);
+          rawData.shift();
+        }
+
+
+        <span class="hljs-keyword">if</span> (firstFilteredData.length &gt;= averageWindowSize) {
+          currentData.z = FilterAverage.calculate(firstFilteredData);
+          firstFilteredData.shift();
+          secondFilteredData.push(currentData.z);
+        }
+
+        <span class="hljs-keyword">if</span> (secondFilteredData.length &gt;= gaussianWindowSize) {
+          currentData.z = FilterGaussian.calculateFilteredArray(secondFilteredData);
+          secondFilteredData.shift();
+          liveStorage.push({<span class="hljs-string">"timestamp"</span>: currentData.timestamp, <span class="hljs-string">"z"</span>: currentData.z});
+        }
+
+        <span class="hljs-keyword">if</span> (liveStorage[<span class="hljs-number">0</span>].timestamp &lt; currentData.timestamp - liveDurationInMs) {
+          liveStorage.shift();
+        }
+      }.bind(<span class="hljs-keyword">this</span>), <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+        alert(<span class="hljs-string">"Beschleunigung konnte nicht abgefragt werden"</span>);
+      }, {
+        frequency: frequencyInMs
+      });
+  };
+
+  <span class="hljs-keyword">var</span> stop = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    toggleText = <span class="hljs-string">"Start"</span>;
+    navigator.accelerometer.clearWatch(isWatching);
+    isWatching = <span class="hljs-literal">null</span>;
+  };
+
+  <span class="hljs-keyword">var</span> toggle = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">if</span> (!navigator.accelerometer) {
+      <span class="hljs-comment">//Because alert triggers "$apply already in progress" we use setTimeout(0)</span>
+      setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+        alert(<span class="hljs-string">"No accelerometer available"</span>)
+      }, <span class="hljs-number">0</span>);
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">if</span> (isWatching) {
+      stop();
+    } <span class="hljs-keyword">else</span> {
+      start();
+    }
+  };
+
+  <span class="hljs-keyword">var</span> getLatestZ = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> liveStorage[liveStorage.length - <span class="hljs-number">1</span>][<span class="hljs-string">"z"</span>] || <span class="hljs-number">0</span>;
+  };
+
+  <span class="hljs-keyword">var</span> getLiveValues = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> liveStorage;
+  };
+
+  <span class="hljs-keyword">var</span> setStartTimestamp = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    startTimestamp = <span class="hljs-built_in">Date</span>.now();
+  };
+
+  <span class="hljs-keyword">var</span> getStartTimestamp = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> startTimestamp;
+  };
+
+  <span class="hljs-keyword">var</span> getToggleButtonText = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> toggleText;
+  }
+
+  <span class="hljs-keyword">return</span> {
+    toggle: toggle,
+    getToggleButtonText: getToggleButtonText,
+    getLiveValues: getLiveValues,
+    getStartTimestamp: getStartTimestamp
+  }
+});</div></div></div></div></body></html>

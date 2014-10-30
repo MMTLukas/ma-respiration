@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="en"><head><title>www/js/factories/filterAverage</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../"><meta name="groc-document-path" content="www/js/factories/filterAverage"><meta name="groc-project-path" content="www/js/factories/filterAverage.js"><link rel="stylesheet" type="text/css" media="all" href="../../../assets/style.css"><script type="text/javascript" src="../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">www/js/factories/filterAverage.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">angular.module(<span class="hljs-string">'respiratoryFrequency'</span>).factory(<span class="hljs-string">'FilterAverage'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="simple-moving-average-algorithm">Simple Moving Average Algorithm</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> windowSize: amount of values that are processed by this filter</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">var</span> windowSize = <span class="hljs-number">20</span>;
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getWindowSize</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> windowSize;
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculate</span><span class="hljs-params">(unfilteredValues)</span> {</span>
+    <span class="hljs-keyword">var</span> tmpUnfilteredValues = unfilteredValues.slice();
+
+    <span class="hljs-keyword">var</span> sum = tmpUnfilteredValues.reduce(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a, b)</span> {</span>
+      <span class="hljs-keyword">return</span> a + b;
+    });
+
+    <span class="hljs-keyword">return</span> sum /= tmpUnfilteredValues.length;
+  }
+
+  <span class="hljs-keyword">return</span> {
+    calculate: calculate,
+    getWindowSize: getWindowSize
+  }
+});</div></div></div></div></body></html>
