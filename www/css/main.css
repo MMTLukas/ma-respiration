@@ -88,7 +88,7 @@ html, body {
 #counter {
     padding: 10px 0 10px 0;
     position: fixed;
-    font-size: 52px;
+    font-size: 30px;
     line-height: 52px;
     bottom: 0;
 }
