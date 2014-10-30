@@ -17,7 +17,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
       calculateSlope(liveData);
       counter = 0;
     }
-    setFrequencyCounter(5);
+    setFrequencyCounter("Atemfrequenz: " + 13 + "x /min");
   }
 
   // calculate the current slope with two values, the window is 5 values, so that the 3 values between are ignored
