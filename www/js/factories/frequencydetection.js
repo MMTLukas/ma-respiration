@@ -51,7 +51,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
 
       calculatedSlopesArray[0] = calculatedSlopesArray[1];
-    }
+    };
 
   return {
     calculateFrequency: calculateFrequency
