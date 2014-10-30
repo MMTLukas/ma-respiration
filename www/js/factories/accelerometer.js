@@ -1,4 +1,4 @@
-angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, FilterMedian, FilterAverage, FilterGaussian) {
+angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, FrequencyCalculator, FilterMedian, FilterAverage, FilterGaussian) {
   var countdownID;
   var toggleText = "Start";
   var isWatching;
@@ -72,6 +72,9 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         if (liveStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
           liveStorage.shift();
         }
+
+        FrequencyCalculator.calculateFrequency(liveStorage);
+
       }.bind(this), function () {
         alert("Beschleunigung konnte nicht abgefragt werden");
       }, {
