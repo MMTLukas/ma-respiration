@@ -9,10 +9,10 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
   slopeStatusOldValue,
   slopeStatusNewValue,
   frequencyCounter,
-  valuesWhereSlopeChanged;
-  //var help = [{"timestamp":1, "z":9.534}, {"timestamp":2, "z":9.854}, {"timestamp":3, "z":9.294}, {"timestamp":4, "z":8.844}, {"timestamp":5, "z":9.294}];
+  valuesWhereSlopeChanged,
+  valuesToCheck = [];
 
-  // init-function to be sure, that all values are set back
+  // init-function to be sure, that all values are set back every time a measurement starts
   var init = function() {
     liveData = [];
     slopesArray = [];
@@ -24,98 +24,99 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     valuesWhereSlopeChanged = [];
   }
 
+  // method which calculates the respiratory-frequency -
   var calculateFrequency = function(data) {
     liveData = data;
-    //console.log(liveData.length);
 
     if (counter > 1) {
       calculateSlope(liveData);
-      counter = 0;
+    } else {
+      counter++;
     }
 
-    counter++;
+    calculateSlope(liveData);
 
     setFrequencyCounter("Atemfrequenz: " + 13 + "x /min");
   }
 
-  // calculate the current slope with two values, the window is 5 values, so that the 3 values between are ignored
+  // this method calculates the current slope for every new value in comparison with the last
   var calculateSlope = function(values) {
+    valuesToCheck = [];
 
     slopesArray[0] = values[values.length - 2];
     slopesArray[1] = values[values.length - 1];
 
-    /*console.log(new Date(slopesArray[0].timestamp).getSeconds());
-     console.log(new Date(slopesArray[0].timestamp).getMilliseconds());*/
-     //console.log(slopesArray[0].z);
-
-     /*console.log(new Date(slopesArray[1].timestamp).getSeconds());
-     console.log(new Date(slopesArray[1].timestamp).getMilliseconds());*/
-     //console.log(slopesArray[1].z);
-
     var currentSlope = ((slopesArray[1].z - slopesArray[0].z) / (slopesArray[1].timestamp - slopesArray[0].timestamp)) / 100000;
 
-    //console.log(currentSlope);
+    valuesToCheck.push({"currentSlope": currentSlope, "timestampLast": slopesArray[1].timestamp, "zLast":slopesArray[1].z, "timestampFirst": slopesArray[0].timestamp, "zFirst":slopesArray[0].z});
 
-    var values = [{"currentSlope": currentSlope, "timestampLast": slopesArray[1].timestamp, "zLast":slopesArray[1].z, "timestampFirst": slopesArray[0].timestamp, "zFirst":slopesArray[0].z}];
-
-    //console.log(values);
-    checkIfSlopeChanged(values);
+    checkIfSlopeChanged(valuesToCheck);
   }
 
+  // this method is checking if the slope changes across the values in order to calculate turning-points
+  // this turning-points are being stored in an array with z-value and timestamp for each point
   var checkIfSlopeChanged = function(value) {
      var help = value;
-    //console.log(help[0].zLast);
+
+    calculatedSlopesArray[1] = help[0].currentSlope;
 
     if(calculatedSlopesArray.length === 0) {
-      calculatedSlopesArray[0] = help[0].currentSlope;
+
+      if(calculatedSlopesArray[1] < 0) {
+        slopeStatusOldValue = "negative";
+      } else if(calculatedSlopesArray[1] > 0) {
+        slopeStatusOldValue = "positive";
+      } else {
+        slopeStatusOldValue = "zero";
+      }
+      //console.log(slopeStatusOldValue);
+    }  else {
 
       if(calculatedSlopesArray[0] < 0) {
         slopeStatusOldValue = "negative";
       } else if(calculatedSlopesArray[0] > 0) {
         slopeStatusOldValue = "positive";
       } else {
-        slopeStatusOldValue = "zero";
+        //slopeStatusOldValue = "zero";
       }
-      //console.log(slopeStatusOldValue);
     }
-
-    calculatedSlopesArray[1] = help[0].currentSlope;
 
     if(calculatedSlopesArray[1] < 0) {
       slopeStatusNewValue = "negative";
-    } else {
+    } else if (calculatedSlopesArray[1] > 0) {
       slopeStatusNewValue = "positive";
-    }/* else {
+    } else {
       //slopeStatusNewValue = "zero";
-    }*/
+    }
 
-    /*console.log("status");
-    console.log(slopeStatusOldValue);
-    console.log(slopeStatusNewValue);*/
-
+    // always when an old and a new slope-value are different, count it as a new turning-point
     if(slopeStatusNewValue != slopeStatusOldValue) {
       //console.log("slope changed");
       frequencyCounter++;
-      //console.log(frequencyCounter);
-      valuesWhereSlopeChanged.push({"timestamp": help[0].timestampLast, "z": help[0].zLast});
+
+      // only save points, where someones' chest is down
+      if((slopeStatusNewValue === "negative") && (slopeStatusOldValue === "positive")) {
+        valuesWhereSlopeChanged.push({"timestamp": help[0].timestampLast, "z": help[0].zLast});
+      }
     } else {
       //console.log("no change");
     }
 
-    console.log(valuesWhereSlopeChanged);
-    //console.log(valuesWhereSlopeChanged);
+    console.log(frequencyCounter);
+    /*console.log(valuesWhereSlopeChanged);*/
 
-
-
-
-
-
-
+    // exchange the old slope-value with the one from the latest value
     calculatedSlopesArray[0] = calculatedSlopesArray[1];
+  }
+
+  // method which gets back the values where someones' chest is down - necessary to sign them in the live-diagram
+  var getBreathPoints = function() {
+    return valuesWhereSlopeChanged;
   };
 
   return {
     init: init,
-    calculateFrequency: calculateFrequency
+    calculateFrequency: calculateFrequency,
+    getBreathPoints: getBreathPoints
   };
 });

@@ -126,18 +126,13 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
   var sinus = function() {
     var sinusValues = [];
-    for (var i = 0; i < 100; i++) {
-      var help = [{"z": Math.sin(i), "timestamp": sinusValues.length}];
-      //console.log(help[0].z);
-      sinusValues.push(help);
-
-      if(i > 1) {
+    for (var i = 0; i < 24*Math.PI; i++) {
+      sinusValues.push({"z": Math.sin(i), "timestamp": sinusValues.length});
+      if(i > 0) {
         FrequencyCalculator.calculateFrequency(sinusValues);
       }
     }
-    //console.log(sinusValues);
-    //return sinusValues;
-  }
+  };
 
   return {
     toggle: toggle,
