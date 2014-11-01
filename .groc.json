@@ -1,0 +1,4 @@
+{
+  "glob": ["README.md", "www/js/controllers/**/*.js", "www/js/factories/**/*.js"],
+  "github": false
+}

@@ -28,7 +28,7 @@ angular.module('respiratoryFrequency').factory('Diagram', function ($interval, A
       canvas.selectAll("*").remove();
 
       var lineData = Accelerometer.getLiveValues();
-      var highsLowsData = FrequencyCalculator.getBreathPoints();
+      var highsLowsData = FrequencyCalculator.getBreathPoints() || 0;
 
       var xRange = d3.scale.linear()
         .range([MARGINS.left, WIDTH - MARGINS.right])
@@ -93,10 +93,24 @@ angular.module('respiratoryFrequency').factory('Diagram', function ($interval, A
       var circles = canvas.selectAll("circle").data(highsLowsData);
       circles.enter()
         .insert("circle")
-        .attr("cx", function(d) { return xRange(d.timestamp)-5; })
-        .attr("cy", function(d) { return yRange(d.z)-5; })
-        .attr("style", "border: 1px solid #F26C68;")
-        .attr("r", 10)
+        .attr("cx", function (d) {
+          return xRange(d.timestamp);
+        })
+        .attr("cy", function (d) {
+          return yRange(d.z);
+        })
+        .attr("r", 7)
+        .style("fill", d3.rgb("#F26C68"));
+
+      circles.enter()
+        .insert("circle")
+        .attr("cx", function (d) {
+          return xRange(d.timestamp);
+        })
+        .attr("cy", function (d) {
+          return yRange(d.z);
+        })
+        .attr("r", 4)
         .style("fill", d3.rgb("#FFCA5C"));
     }, 100);
   };

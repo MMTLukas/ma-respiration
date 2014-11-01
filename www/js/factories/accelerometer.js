@@ -8,15 +8,16 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var frequencyInMs = 65;
   var windowInMs = 650;
   var startTimestamp = "";
+  var currentTimestamp = 0;
 
   var rawData = [];
   var medianFilteredData = [];
-  var secondFilteredData = [];
+  var averageFilteredData = [];
+  var gaussianFilteredData = [];
 
   FilterGaussian.setSigma(3);
   FilterGaussian.setK(7);
   FilterGaussian.calculateCoefficients();
-
   FilterAverage.setWindowSize(windowInMs / frequencyInMs);
   FilterMedian.setWindowSize(windowInMs / frequencyInMs);
 
@@ -26,14 +27,18 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
   var start = function () {
     FrequencyCalculator.init();
-    setFrequencyCounter("Atemfrequenz: " + "-" + "x /min");
+    setFrequencyCounter("Atemzüge: -");
     setStartTimestamp();
+
     toggleText = "Stop";
     diagramStorage = [];
+    calculatorStorage = [];
     rawData = [];
     medianFilteredData = [];
     averageFilteredData = [];
     gaussianFilteredData = [];
+
+    var i = 0;
 
     isWatching = navigator.accelerometer.watchAcceleration(
       function (acceleration) {
@@ -50,36 +55,60 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
         var currentData = {
           "timestamp": acceleration.timestamp,
-          "z": Math.floor(acceleration.z * 10) / 10
+          "z": acceleration.z
         };
-        rawData.push(currentData.z);
+        rawData.push(currentData);
 
         if (rawData.length >= medianWindowSize) {
-          currentData.z = FilterMedian.calculate(rawData);
-          medianFilteredData.push(currentData.z)
+          var z = FilterMedian.calculate(rawData);
+          medianFilteredData.push({
+            "timestamp": currentData.timestamp,
+            "z": z
+          });
           rawData.shift();
         }
 
         if (medianFilteredData.length >= averageWindowSize) {
-          currentData.z = FilterAverage.calculate(medianFilteredData);
-          averageFilteredData.push(currentData.z)
+          var z = FilterAverage.calculate(medianFilteredData);
+          averageFilteredData.push({
+            "timestamp": currentData.timestamp,
+            "z": z
+          });
           medianFilteredData.shift();
 
-          diagramStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
+          diagramStorage.push({
+            "timestamp": currentData.timestamp,
+            "z": z
+          });
         }
 
         if (averageFilteredData.length >= gaussianWindowSize) {
           averageFilteredData.shift();
 
-          gaussianFilteredData = FilterGaussian.calculateFilteredArray(averageFilteredData);
-          calculatorStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
+          if (gaussianFilteredData.length == 0) {
+            gaussianFilteredData = gaussianFilteredData.concat(FilterGaussian.calculateFilteredArray(averageFilteredData.slice()));
+          }
+        }
+
+        if (gaussianFilteredData.length > 0) {
+
+          //TODO: Remove line below and uncomment comment lines below
+          calculatorStorage = diagramStorage;
+          /*
+          calculatorStorage.push({
+            "timestamp": currentData.timestamp,
+            "z": gaussianFilteredData[0].z
+          });
+          */
+
+          gaussianFilteredData.shift();
         }
 
         if (diagramStorage.length > 0 && diagramStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
           diagramStorage.shift();
         }
 
-        FrequencyCalculator.calculateFrequency(diagramStorage);
+        FrequencyCalculator.calculateFrequency(calculatorStorage, currentData.timestamp);
 
       }.bind(this), function () {
         alert("Beschleunigung konnte nicht abgefragt werden");
@@ -116,11 +145,12 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   };
 
   var getLiveValues = function () {
-    return diagramStorage;
+    return diagramStorage.slice();
   };
 
   var setStartTimestamp = function () {
     startTimestamp = Date.now();
+    FrequencyCalculator.setStartTimestamp(startTimestamp);
   };
 
   var getStartTimestamp = function () {
@@ -129,7 +159,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
   var getToggleButtonText = function () {
     return toggleText;
-  }
+  };
 
   var sinus = function () {
     var sinusValues = [];

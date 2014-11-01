@@ -1,4 +1,13 @@
 angular.module('respiratoryFrequency').factory('FilterAverage', function () {
+
+  /**
+   * ## Simple Moving Average Algorithm
+   */
+
+  /**
+   windowSize: amount of values that are processed by this filter
+   */
+
   var windowSize = 20;
 
   function getWindowSize() {
@@ -6,17 +15,19 @@ angular.module('respiratoryFrequency').factory('FilterAverage', function () {
   }
 
   function setWindowSize(value) {
-    windowSize = value;
+    windowSize = Math.floor(value);
   }
 
   function calculate(unfilteredValues) {
     var tmpUnfilteredValues = unfilteredValues.slice();
+    var sum = 0;
 
-    var sum = tmpUnfilteredValues.reduce(function(a, b) {
-      return a + b;
-    });
+    for (var i = 0; i < tmpUnfilteredValues.length; i++) {
+      sum += tmpUnfilteredValues[i].z;
+    }
 
-    return sum /= tmpUnfilteredValues.length;
+    sum /= tmpUnfilteredValues.length;
+    return Math.floor(sum * 10)/10;
   }
 
   return {
