@@ -5,6 +5,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var liveStorage = [];
   var liveDurationInMs = 20000;
   var frequencyInMs = 65;
+  var windowInMs = 650;
   var startTimestamp = "";
 
   var rawData = [];
@@ -15,12 +16,12 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   FilterGaussian.setK(7);
   FilterGaussian.calculateCoefficients();
 
+  FilterAverage.setWindowSize(windowInMs/frequencyInMs);
+  FilterMedian.setWindowSize(windowInMs/frequencyInMs);
+
   var medianWindowSize = FilterMedian.getWindowSize();
   var averageWindowSize = FilterAverage.getWindowSize();
   var gaussianWindowSize = 2 * FilterGaussian.getK();
-
-
-
 
   var start = function () {
     setStartTimestamp();
@@ -37,39 +38,37 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         //TODO: Display spinning wheal for user
         if (rawData.length <= 0) {
           console.log("It will take " +
-          (frequencyInMs * medianWindowSize +
-          frequencyInMs * averageWindowSize +
-          frequencyInMs * gaussianWindowSize) +
-          " ms till data will be displayed");
+            (frequencyInMs * medianWindowSize +
+              frequencyInMs * averageWindowSize +
+              frequencyInMs * gaussianWindowSize) +
+            " ms till data will be displayed");
         }
 
         var currentData = {
           "timestamp": acceleration.timestamp,
-          "z": acceleration.z
+          "z": Math.floor(acceleration.z*10)/10
         };
         rawData.push(currentData.z);
 
-
         if (rawData.length >= medianWindowSize) {
           currentData.z = FilterMedian.calculate(rawData);
-          firstFilteredData.push(currentData.z);
+          firstFilteredData.push(currentData.z)
           rawData.shift();
         }
-
 
         if (firstFilteredData.length >= averageWindowSize) {
           currentData.z = FilterAverage.calculate(firstFilteredData);
           firstFilteredData.shift();
-          secondFilteredData.push(currentData.z);
-        }
-
-        if (secondFilteredData.length >= gaussianWindowSize) {
-          currentData.z = FilterGaussian.calculateFilteredArray(secondFilteredData);
-          secondFilteredData.shift();
           liveStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
         }
 
-        if (liveStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
+        /*if (rawData.length >= gaussianWindowSize) {
+         currentData.z = FilterGaussian.calculateFilteredArray(rawData);
+         rawData.shift();
+         liveStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
+         }*/
+
+        if (liveStorage.length > 0 && liveStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
           liveStorage.shift();
         }
       }.bind(this), function () {
@@ -117,7 +116,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return startTimestamp;
   };
 
-  var getToggleButtonText = function() {
+  var getToggleButtonText = function () {
     return toggleText;
   }
 
