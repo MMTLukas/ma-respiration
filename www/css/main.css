@@ -13,11 +13,11 @@ html, body {
     padding: 0;
     height: 100%;
     width: 100%;
-
+    background: rgba(207, 209, 208, 1);
     color: #FFCA5C;
 }
 
-#app {
+#ng-app {
     height: 100%;
     width: 100%;
 }
@@ -37,7 +37,7 @@ html, body {
 }
 
 #menu .half:first-child {
-    border-right: 1px solid #555;
+    border-right: 2px solid rgba(255, 202, 92, 0.55);
 }
 
 .button {
@@ -61,7 +61,6 @@ html, body {
 .button a:link, .button a:visited {
     text-decoration: none;
     color: #FFCA5C;
-    color: #FFCA5C;
     width: 100%;
     height: 100%;
     float: left;
@@ -79,18 +78,25 @@ html, body {
     width: 100%;
     background: #F26C68;
     text-align: center;
-
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    height: auto;
+    overflow: hidden;
 }
 
 #counter {
     padding: 10px 0 10px 0;
     position: fixed;
+    height: 80px;
     font-size: 30px;
-    line-height: 52px;
+    line-height: 35px;
     bottom: 0;
+}
+
+#counter .lastMinute {
+    font-size: 20px;
+    line-height: 22px;
 }
 
 /**
@@ -120,7 +126,7 @@ html, body {
     height:50px;
     width: 100%;
     line-height:50px;
-    border-top: 1px solid #555;
+    border-top: 2px solid rgba(255, 202, 92, 0.55);
 }
 
 #data .button a{
@@ -135,13 +141,28 @@ html, body {
 
 .viewArchiv {
     width: 100%;
-    background-color: azure;
+    height: 100%;
 }
 
 #archiv {
     width: 100%;
     height: 100%;
-    min-height: 800px;
+    min-height: 500px;
     max-height: 100%;
     height: auto;
+}
+
+#archiv p {
+    font-size: 24px;
+    color: #F26C68;
+    line-height: 50px;
+    text-align: center;
+    margin-bottom: -10px;
+}
+
+#archiv li{
+    font-size: 20px;
+    color: #F26C68;
+    line-height: 40px;
+    text-align: center;
 }

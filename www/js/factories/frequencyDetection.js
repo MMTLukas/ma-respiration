@@ -10,7 +10,11 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
   slopeStatusNewValue,
   frequencyCounter,
   valuesWhereSlopeChanged,
-  valuesToCheck = [];
+  startTimestamp,
+  currentTimestamp,
+  currentSecond,
+  frequencyLastMinute,
+  valuesToCheck;
 
   // init-function to be sure, that all values are set back every time a measurement starts
   var init = function() {
@@ -22,11 +26,16 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     slopeStatusNewValue = "";
     frequencyCounter = 0;
     valuesWhereSlopeChanged = [];
-  }
+    valuesToCheck = [];
+    currentSecond = 0;
+    currentTimestamp = 0;
+    frequencyLastMinute = 0;
+  };
 
   // method which calculates the respiratory-frequency -
-  var calculateFrequency = function(data) {
+  var calculateFrequency = function(data, timestamp) {
     liveData = data;
+    currentTimestamp = timestamp;
 
     if (counter > 1) {
       calculateSlope(liveData);
@@ -36,8 +45,21 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
     calculateSlope(liveData);
 
-    setFrequencyCounter("Atemfrequenz: " + 13 + "x /min");
-  }
+    currentSecond = new Date(currentTimestamp - startTimestamp).getSeconds();
+
+    var currentBreathFrequency = getBreathFrequency();
+
+    if(currentBreathFrequency > 0) {
+      if(currentSecond === 59) {
+        frequencyLastMinute = currentBreathFrequency;
+        setFrequencyLastMinute("Atemfrequenz letzte Minute: " + frequencyLastMinute + "x /min");
+        frequencyCounter = 0;
+      }
+      setFrequencyCounter("Atemzüge: " + currentBreathFrequency + "x");
+    } else {
+      setFrequencyCounter("Atemzüge: -");
+    }
+  };
 
   // this method calculates the current slope for every new value in comparison with the last
   var calculateSlope = function(values) {
@@ -51,7 +73,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     valuesToCheck.push({"currentSlope": currentSlope, "timestampLast": slopesArray[1].timestamp, "zLast":slopesArray[1].z, "timestampFirst": slopesArray[0].timestamp, "zFirst":slopesArray[0].z});
 
     checkIfSlopeChanged(valuesToCheck);
-  }
+  };
 
   // this method is checking if the slope changes across the values in order to calculate turning-points
   // this turning-points are being stored in an array with z-value and timestamp for each point
@@ -94,29 +116,39 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
       //console.log("slope changed");
       frequencyCounter++;
 
-      // only save points, where someones' chest is down
-      if((slopeStatusNewValue === "negative") && (slopeStatusOldValue === "positive")) {
-        valuesWhereSlopeChanged.push({"timestamp": help[0].timestampLast, "z": help[0].zLast});
-      }
-    } else {
-      //console.log("no change");
+      // save all points, where the slope changes
+
+      valuesWhereSlopeChanged.push({"timestamp": help[0].timestampFirst, "z": help[0].zFirst});
+
+      // store for the second point for the slope-calculation
+      // valuesWhereSlopeChanged.push({"timestamp": help[0].timestampLast, "z": help[0].zLast});
     }
 
-    console.log(frequencyCounter);
-    /*console.log(valuesWhereSlopeChanged);*/
+      //console.log(frequencyCounter);
+      //console.log(valuesWhereSlopeChanged);
 
     // exchange the old slope-value with the one from the latest value
     calculatedSlopesArray[0] = calculatedSlopesArray[1];
-  }
+  };
+
+  var getBreathFrequency = function() {
+    var current = (frequencyCounter - 1) / 2;
+    return current;
+  };
 
   // method which gets back the values where someones' chest is down - necessary to sign them in the live-diagram
   var getBreathPoints = function() {
     return valuesWhereSlopeChanged;
   };
 
+  var setStartTimestamp = function(value) {
+    startTimestamp = value;
+  };
+
   return {
     init: init,
     calculateFrequency: calculateFrequency,
-    getBreathPoints: getBreathPoints
+    getBreathPoints: getBreathPoints,
+    setStartTimestamp: setStartTimestamp
   };
 });
