@@ -9,7 +9,7 @@ angular.module('respiratoryFrequency').controller('CounterController', function 
 
   setFrequencyLastMinute = function(value) {
     $scope.frequencyLastMinute = value;
-  }
+  };
 
   return {
     setFrequencyCounter: setFrequencyCounter,

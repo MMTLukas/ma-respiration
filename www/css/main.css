@@ -70,6 +70,21 @@ html, body {
     box-sizing: border-box;
 }
 
+.toggleButton a:link, .toggleButton a:visited {
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    float: left;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.toggleButton a {
+    color: #FFCA5C;
+}
+
 /**
  *  Respiratory frequency counter at bottom
  */
@@ -88,15 +103,17 @@ html, body {
 #counter {
     padding: 10px 0 10px 0;
     position: fixed;
-    height: 80px;
+    min-height: 60px;
+    height: auto;
+    max-height: 90px;
     font-size: 30px;
-    line-height: 35px;
+    line-height: 40px;
     bottom: 0;
 }
 
 #counter .lastMinute {
-    font-size: 20px;
-    line-height: 22px;
+    font-size: 21px;
+    line-height: 24px;
 }
 
 /**

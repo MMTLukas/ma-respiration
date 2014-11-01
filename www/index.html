@@ -26,7 +26,7 @@
 
         <div class="viewLive" ng-show="navigationCtrl.isSelected(1)" ng-swipe-left="navigationCtrl.goToArchiv()">
             <div id="data" ng-controller="DataController as dataCtrl">
-                <div class="button" ng-click="dataCtrl.toggle()">{{ toggleButtonText }}</div>
+                <div class="toggleButton" ng-click="dataCtrl.toggle()"><a href>{{ toggleButtonText }}</a></div>
             </div>
 
             <div id="diagram"></div>
