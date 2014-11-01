@@ -57,7 +57,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
         if (rawData.length >= medianWindowSize) {
           currentData.z = FilterMedian.calculate(rawData);
-          firstFilteredData.push(currentData.z)
+          firstFilteredData.push(currentData.z);
           rawData.shift();
         }
 

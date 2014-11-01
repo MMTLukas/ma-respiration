@@ -132,7 +132,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
   };
 
   var getBreathFrequency = function() {
-    var current = (frequencyCounter - 1) / 2;
+    var current = ((frequencyCounter - 1) / 2);
     return current;
   };
 
