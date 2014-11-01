@@ -1,4 +1,4 @@
-angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, FilterMedian, FilterAverage, FilterGaussian) {
+angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeout, FrequencyCalculator, FilterMedian, FilterAverage, FilterGaussian) {
   var countdownID;
   var toggleText = "Start";
   var isWatching;
@@ -24,6 +24,8 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var gaussianWindowSize = 2 * FilterGaussian.getK();
 
   var start = function () {
+    FrequencyCalculator.init();
+    setFrequencyCounter("Atemfrequenz: " + "-" + "x /min");
     setStartTimestamp();
     toggleText = "Stop";
     liveStorage = [];
@@ -71,6 +73,9 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         if (liveStorage.length > 0 && liveStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
           liveStorage.shift();
         }
+
+        FrequencyCalculator.calculateFrequency(liveStorage);
+
       }.bind(this), function () {
         alert("Beschleunigung konnte nicht abgefragt werden");
       }, {
@@ -94,6 +99,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     }
 
     if (isWatching) {
+      //sinus();
       stop();
     } else {
       start();
@@ -120,8 +126,19 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return toggleText;
   }
 
+  var sinus = function() {
+    var sinusValues = [];
+    for (var i = 0; i < 24*Math.PI; i++) {
+      sinusValues.push({"z": Math.sin(i), "timestamp": sinusValues.length});
+      if(i > 0) {
+        FrequencyCalculator.calculateFrequency(sinusValues);
+      }
+    }
+  };
+
   return {
     toggle: toggle,
+    sinus: sinus,
     getToggleButtonText: getToggleButtonText,
     getLiveValues: getLiveValues,
     getStartTimestamp: getStartTimestamp
