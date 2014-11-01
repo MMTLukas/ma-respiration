@@ -1,4 +1,4 @@
-angular.module('respiratoryFrequency').factory('Diagram', function ($interval, Accelerometer) {
+angular.module('respiratoryFrequency').factory('Diagram', function ($interval, Accelerometer, FrequencyCalculator) {
   var HEIGHT = window.innerHeight - 172;
   var WIDTH = window.innerWidth;
   var isDrawing = null;
@@ -21,13 +21,14 @@ angular.module('respiratoryFrequency').factory('Diagram', function ($interval, A
     } else {
       start();
     }
-  }
+  };
 
   var start = function () {
     isDrawing = $interval(function () {
       canvas.selectAll("*").remove();
 
       var lineData = Accelerometer.getLiveValues();
+      var highsLowsData = FrequencyCalculator.getBreathPoints();
 
       var xRange = d3.scale.linear()
         .range([MARGINS.left, WIDTH - MARGINS.right])
@@ -85,16 +86,25 @@ angular.module('respiratoryFrequency').factory('Diagram', function ($interval, A
 
       canvas.append("svg:path")
         .attr("d", lineFunction(lineData))
-        .attr("stroke", "red")
-        .attr("stroke-width", 2)
-        .attr("fill", "none")
+        .attr("stroke", d3.rgb("#F26C68"))
+        .attr("stroke-width", 3)
+        .attr("fill", "none");
+
+      var circles = canvas.selectAll("circle").data(highsLowsData);
+      circles.enter()
+        .insert("circle")
+        .attr("cx", function(d) { return xRange(d.timestamp)-5; })
+        .attr("cy", function(d) { return yRange(d.z)-5; })
+        .attr("style", "border: 1px solid #F26C68;")
+        .attr("r", 10)
+        .style("fill", d3.rgb("#FFCA5C"));
     }, 100);
   };
 
   var stop = function () {
     $interval.cancel(isDrawing);
     isDrawing = null;
-  }
+  };
 
   return {
     toggle: toggle

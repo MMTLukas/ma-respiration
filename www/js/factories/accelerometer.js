@@ -2,22 +2,23 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var countdownID;
   var toggleText = "Start";
   var isWatching;
-  var liveStorage = [];
+  var diagramStorage = [];
+  var calculatorStorage = [];
   var liveDurationInMs = 20000;
   var frequencyInMs = 65;
   var windowInMs = 650;
   var startTimestamp = "";
 
   var rawData = [];
-  var firstFilteredData = [];
+  var medianFilteredData = [];
   var secondFilteredData = [];
 
   FilterGaussian.setSigma(3);
   FilterGaussian.setK(7);
   FilterGaussian.calculateCoefficients();
 
-  FilterAverage.setWindowSize(windowInMs/frequencyInMs);
-  FilterMedian.setWindowSize(windowInMs/frequencyInMs);
+  FilterAverage.setWindowSize(windowInMs / frequencyInMs);
+  FilterMedian.setWindowSize(windowInMs / frequencyInMs);
 
   var medianWindowSize = FilterMedian.getWindowSize();
   var averageWindowSize = FilterAverage.getWindowSize();
@@ -28,10 +29,11 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     setFrequencyCounter("Atemfrequenz: " + "-" + "x /min");
     setStartTimestamp();
     toggleText = "Stop";
-    liveStorage = [];
+    diagramStorage = [];
     rawData = [];
-    firstFilteredData = [];
-    secondFilteredData = [];
+    medianFilteredData = [];
+    averageFilteredData = [];
+    gaussianFilteredData = [];
 
     isWatching = navigator.accelerometer.watchAcceleration(
       function (acceleration) {
@@ -40,41 +42,44 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         //TODO: Display spinning wheal for user
         if (rawData.length <= 0) {
           console.log("It will take " +
-            (frequencyInMs * medianWindowSize +
-              frequencyInMs * averageWindowSize +
-              frequencyInMs * gaussianWindowSize) +
-            " ms till data will be displayed");
+          (frequencyInMs * medianWindowSize +
+          frequencyInMs * averageWindowSize +
+          frequencyInMs * gaussianWindowSize) +
+          " ms till data will be displayed");
         }
 
         var currentData = {
           "timestamp": acceleration.timestamp,
-          "z": Math.floor(acceleration.z*10)/10
+          "z": Math.floor(acceleration.z * 10) / 10
         };
         rawData.push(currentData.z);
 
         if (rawData.length >= medianWindowSize) {
           currentData.z = FilterMedian.calculate(rawData);
-          firstFilteredData.push(currentData.z)
+          medianFilteredData.push(currentData.z)
           rawData.shift();
         }
 
-        if (firstFilteredData.length >= averageWindowSize) {
-          currentData.z = FilterAverage.calculate(firstFilteredData);
-          firstFilteredData.shift();
-          liveStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
+        if (medianFilteredData.length >= averageWindowSize) {
+          currentData.z = FilterAverage.calculate(medianFilteredData);
+          averageFilteredData.push(currentData.z)
+          medianFilteredData.shift();
+
+          diagramStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
         }
 
-        /*if (rawData.length >= gaussianWindowSize) {
-         currentData.z = FilterGaussian.calculateFilteredArray(rawData);
-         rawData.shift();
-         liveStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
-         }*/
+        if (averageFilteredData.length >= gaussianWindowSize) {
+          averageFilteredData.shift();
 
-        if (liveStorage.length > 0 && liveStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
-          liveStorage.shift();
+          gaussianFilteredData = FilterGaussian.calculateFilteredArray(averageFilteredData);
+          calculatorStorage.push({"timestamp": currentData.timestamp, "z": currentData.z});
         }
 
-        FrequencyCalculator.calculateFrequency(liveStorage);
+        if (diagramStorage.length > 0 && diagramStorage[0].timestamp < currentData.timestamp - liveDurationInMs) {
+          diagramStorage.shift();
+        }
+
+        FrequencyCalculator.calculateFrequency(diagramStorage);
 
       }.bind(this), function () {
         alert("Beschleunigung konnte nicht abgefragt werden");
@@ -107,11 +112,11 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   };
 
   var getLatestZ = function () {
-    return liveStorage[liveStorage.length - 1]["z"] || 0;
+    return diagramStorage[diagramStorage.length - 1]["z"] || 0;
   };
 
   var getLiveValues = function () {
-    return liveStorage;
+    return diagramStorage;
   };
 
   var setStartTimestamp = function () {
@@ -126,11 +131,11 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return toggleText;
   }
 
-  var sinus = function() {
+  var sinus = function () {
     var sinusValues = [];
-    for (var i = 0; i < 24*Math.PI; i++) {
+    for (var i = 0; i < 24 * Math.PI; i++) {
       sinusValues.push({"z": Math.sin(i), "timestamp": sinusValues.length});
-      if(i > 0) {
+      if (i > 0) {
         FrequencyCalculator.calculateFrequency(sinusValues);
       }
     }
