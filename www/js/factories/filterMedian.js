@@ -18,6 +18,12 @@ angular.module('respiratoryFrequency').factory('FilterMedian', function () {
     return windowSize;
   }
 
+
+
+  function setWindowSize(value) {
+    windowSize = value;
+  }
+
   /**
    * @public
    * @function calculate
@@ -26,6 +32,7 @@ angular.module('respiratoryFrequency').factory('FilterMedian', function () {
    *
    * @return {number} median
    */
+
   function calculate(unfilteredValues) {
     var tmpUnfilteredValues = unfilteredValues.slice();
 
@@ -48,6 +55,7 @@ angular.module('respiratoryFrequency').factory('FilterMedian', function () {
    */
   return {
     calculate: calculate,
+    setWindowSize: setWindowSize,
     getWindowSize: getWindowSize
   }
 });

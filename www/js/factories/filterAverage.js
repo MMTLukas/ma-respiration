@@ -14,6 +14,10 @@ angular.module('respiratoryFrequency').factory('FilterAverage', function () {
     return windowSize;
   }
 
+  function setWindowSize(value) {
+    windowSize = value;
+  }
+
   function calculate(unfilteredValues) {
     var tmpUnfilteredValues = unfilteredValues.slice();
 
@@ -26,6 +30,7 @@ angular.module('respiratoryFrequency').factory('FilterAverage', function () {
 
   return {
     calculate: calculate,
+    setWindowSize: setWindowSize,
     getWindowSize: getWindowSize
   }
 });
