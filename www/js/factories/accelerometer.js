@@ -27,7 +27,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
   var start = function () {
     FrequencyCalculator.init();
-    setFrequencyCounter("Atemzüge: -");
+    setFrequencyCounter("Atemzüge aktuell: -");
     setStartTimestamp();
 
     toggleText = "Stop";
@@ -108,8 +108,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
           diagramStorage.shift();
         }
 
-        FrequencyCalculator.calculateFrequency(calculatorStorage, currentData.timestamp);
-
+        FrequencyCalculator.mainFrequency(calculatorStorage, currentData.timestamp);
       }.bind(this), function () {
         alert("Beschleunigung konnte nicht abgefragt werden");
       }, {
@@ -133,7 +132,6 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     }
 
     if (isWatching) {
-      //sinus();
       stop();
     } else {
       start();
@@ -161,19 +159,8 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
     return toggleText;
   };
 
-  var sinus = function () {
-    var sinusValues = [];
-    for (var i = 0; i < 24 * Math.PI; i++) {
-      sinusValues.push({"z": Math.sin(i), "timestamp": sinusValues.length});
-      if (i > 0) {
-        FrequencyCalculator.calculateFrequency(sinusValues);
-      }
-    }
-  };
-
   return {
     toggle: toggle,
-    sinus: sinus,
     getToggleButtonText: getToggleButtonText,
     getLiveValues: getLiveValues,
     getStartTimestamp: getStartTimestamp

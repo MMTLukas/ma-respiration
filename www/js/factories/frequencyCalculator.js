@@ -3,25 +3,23 @@
  */
 angular.module('respiratoryFrequency').factory('FrequencyCalculator', function () {
   var liveData,
-  slopesArray,
-  calculatedSlopesArray,
-  counter,
-  slopeStatusOldValue,
-  slopeStatusNewValue,
-  frequencyCounter,
-  valuesWhereSlopeChanged,
-  startTimestamp,
-  currentTimestamp,
-  currentSecond,
-  frequencyLastMinute,
-  valuesToCheck;
+    slopesArray,
+    calculatedSlopesArray,
+    slopeStatusOldValue,
+    slopeStatusNewValue,
+    frequencyCounter,
+    valuesWhereSlopeChanged,
+    startTimestamp,
+    currentTimestamp,
+    currentSecond,
+    frequencyLastMinute,
+    valuesToCheck;
 
   // init-function to be sure, that all values are set back every time a measurement starts
   var init = function() {
     liveData = [];
     slopesArray = [];
     calculatedSlopesArray = [];
-    counter = 0;
     slopeStatusOldValue = "";
     slopeStatusNewValue = "";
     frequencyCounter = 0;
@@ -33,31 +31,36 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
   };
 
   // method which calculates the respiratory-frequency -
-  var calculateFrequency = function(data, timestamp) {
+  var mainFrequency = function(data, timestamp) {
     liveData = data;
     currentTimestamp = timestamp;
 
-    if (counter > 1) {
+    // start slope-calculation only when at least two values are available
+    if (liveData.length > 1) {
+
       calculateSlope(liveData);
-    } else {
-      counter++;
+      calculateFrequency();
     }
+    //calculateSlope(liveData);
+  };
 
-    calculateSlope(liveData);
-
+  // method to calculate the breath-frequency and to set the UI-values for the user
+  var calculateFrequency = function() {
     currentSecond = new Date(currentTimestamp - startTimestamp).getSeconds();
 
     var currentBreathFrequency = getBreathFrequency();
 
     if(currentBreathFrequency > 0) {
+
       if(currentSecond === 59) {
         frequencyLastMinute = currentBreathFrequency;
-        setFrequencyLastMinute("Atemfrequenz letzte Minute: " + frequencyLastMinute + "x /min");
+        setFrequencyLastMinute("Atemfrequenz l. Minute: " + frequencyLastMinute + "x /min");
         frequencyCounter = 0;
       }
-      setFrequencyCounter("Atemzüge: " + currentBreathFrequency + "x");
+      setFrequencyCounter("Atemzüge aktuell: " + currentBreathFrequency + "x");
+
     } else {
-      setFrequencyCounter("Atemzüge: -");
+      setFrequencyCounter("Atemzüge aktuell: -");
     }
   };
 
@@ -78,7 +81,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
   // this method is checking if the slope changes across the values in order to calculate turning-points
   // this turning-points are being stored in an array with z-value and timestamp for each point
   var checkIfSlopeChanged = function(value) {
-     var help = value;
+    var help = value;
 
     calculatedSlopesArray[1] = help[0].currentSlope;
 
@@ -86,57 +89,58 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
       if(calculatedSlopesArray[1] < 0) {
         slopeStatusOldValue = "negative";
+
       } else if(calculatedSlopesArray[1] > 0) {
         slopeStatusOldValue = "positive";
+
       } else {
         slopeStatusOldValue = "zero";
       }
-      //console.log(slopeStatusOldValue);
+
     }  else {
 
       if(calculatedSlopesArray[0] < 0) {
         slopeStatusOldValue = "negative";
+
       } else if(calculatedSlopesArray[0] > 0) {
         slopeStatusOldValue = "positive";
+
       } else {
-        //slopeStatusOldValue = "zero";
+        // do nothing
       }
     }
 
     if(calculatedSlopesArray[1] < 0) {
       slopeStatusNewValue = "negative";
+
     } else if (calculatedSlopesArray[1] > 0) {
       slopeStatusNewValue = "positive";
+
     } else {
-      //slopeStatusNewValue = "zero";
+      // do nothing
     }
 
     // always when an old and a new slope-value are different, count it as a new turning-point
     if(slopeStatusNewValue != slopeStatusOldValue) {
-      //console.log("slope changed");
       frequencyCounter++;
 
       // save all points, where the slope changes
-
       valuesWhereSlopeChanged.push({"timestamp": help[0].timestampFirst, "z": help[0].zFirst});
 
-      // store for the second point for the slope-calculation
+      // store for the second points of the slope-calculation
       // valuesWhereSlopeChanged.push({"timestamp": help[0].timestampLast, "z": help[0].zLast});
     }
-
-      //console.log(frequencyCounter);
-      //console.log(valuesWhereSlopeChanged);
 
     // exchange the old slope-value with the one from the latest value
     calculatedSlopesArray[0] = calculatedSlopesArray[1];
   };
 
   var getBreathFrequency = function() {
-    var current = (frequencyCounter - 1) / 2;
+    var current = ((frequencyCounter - 1) / 2);
     return current;
   };
 
-  // method which gets back the values where someones' chest is down - necessary to sign them in the live-diagram
+  // method which gets back the values of all turning-points - necessary to sign them in the live-diagram
   var getBreathPoints = function() {
     return valuesWhereSlopeChanged;
   };
@@ -147,7 +151,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
   return {
     init: init,
-    calculateFrequency: calculateFrequency,
+    mainFrequency: mainFrequency,
     getBreathPoints: getBreathPoints,
     setStartTimestamp: setStartTimestamp
   };
