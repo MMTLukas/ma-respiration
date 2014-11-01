@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><title>www/js/factories/filterMedian</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../"><meta name="groc-document-path" content="www/js/factories/filterMedian"><meta name="groc-project-path" content="www/js/factories/filterMedian.js"><link rel="stylesheet" type="text/css" media="all" href="../../../assets/style.css"><script type="text/javascript" src="../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">www/js/factories/filterMedian.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">angular.module(<span class="hljs-string">'respiratoryFrequency'</span>).factory(<span class="hljs-string">'FilterMedian'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="median-filter">Median Filter</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>variable windowSize: amount of values that are processed by this filter</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">var</span> windowSize = <span class="hljs-number">20</span>;</div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public function getWindowSize</span></p>
+<p><strong>Returns a number</strong></p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getWindowSize</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> windowSize;
+  }</div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public function calculate</span></p>
+<p>Parameters:</p>
+<ul>
+<li><strong>unfilteredValues must be an Array.</strong><br/>(Array that needs to be filtered)</li>
+</ul>
+<p><strong>Returns a number</strong><br/>(median)</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculate</span><span class="hljs-params">(unfilteredValues)</span> {</span>
+    <span class="hljs-keyword">var</span> tmpUnfilteredValues = unfilteredValues.slice();
+
+    tmpUnfilteredValues.sort(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(a, b)</span> {</span>
+      <span class="hljs-keyword">return</span> a - b;
+    });
+
+    <span class="hljs-keyword">var</span> halfOfLength = tmpUnfilteredValues.length / <span class="hljs-number">2</span>;
+
+    <span class="hljs-keyword">if</span> (windowSize % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">return</span> (tmpUnfilteredValues[halfOfLength] + tmpUnfilteredValues[halfOfLength + <span class="hljs-number">1</span>]) / <span class="hljs-number">2</span>;
+    }
+    <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">return</span> tmpUnfilteredValues[<span class="hljs-built_in">Math</span>.floor(halfOfLength) + <span class="hljs-number">1</span>];
+    }
+  }</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><strong>Returns an Object</strong><br/>(Object with public functions)</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">return</span> {
+    calculate: calculate,
+    getWindowSize: getWindowSize
+  }
+});</div></div></div></div></body></html>
