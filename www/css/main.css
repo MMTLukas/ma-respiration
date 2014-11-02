@@ -37,11 +37,12 @@ html, body {
 }
 
 #menu .half:first-child {
-    border-right: 2px solid rgba(255, 202, 92, 0.55);
+    border-right: 3px solid #FFCA5C;
 }
 
 .button {
-    background: rgba(242, 108, 108, 0.85);
+    background: rgba(177, 52, 47, 0.55);
+    border-bottom: 4px solid rgba(177, 52, 47, 0.55);
     width:100%;
     float: left;
     font-size: 32px;
@@ -55,12 +56,17 @@ html, body {
 }
 
 .button:active, .button.active {
-    background: #F26C68;
+    background: rgba(145, 42, 39, 1);
+    border-bottom: 4px solid #FFCA5C;
 }
+
+.button.half.active > a {
+    color: #FFCA5C !important;
+}
+
 .button a:link, .button a:visited {
     text-decoration: none;
-    border-bottom: 3px solid rgba(255, 202, 92, 0.55);
-    color: #FFCA5C;
+    color: #835900 !important;
     width: 100%;
     height: 100%;
     float: left;

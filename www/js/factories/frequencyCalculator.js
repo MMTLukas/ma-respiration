@@ -1,6 +1,3 @@
-/**
- * Created by ARF-Design on 30.10.2014.
- */
 angular.module('respiratoryFrequency').factory('FrequencyCalculator', function () {
   var liveData,
     slopesArray,
@@ -13,8 +10,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     currentTimestamp,
     currentSecond,
     frequencyLastMinute,
-    minutesCounter,
-    valuesToCheck;
+    minutesCounter;
 
   // init-function to be sure, that all values are set back every time a measurement starts
   var init = function() {
@@ -25,7 +21,6 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     slopeStatusNewValue = "";
     frequencyCounter = 0;
     valuesWhereSlopeChanged = [];
-    valuesToCheck = [];
     currentSecond = 0;
     currentTimestamp = 0;
     minutesCounter = 1;
@@ -54,12 +49,14 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
     if(currentBreathFrequency > 0) {
 
+      // if a minute is over, this lines display the breath-frequency for the last minute
       if(currentSecond === 59) {
         frequencyLastMinute = currentBreathFrequency;
         setFrequencyLastMinute("Atemfrequenz " + minutesCounter + ". Minute: " + frequencyLastMinute + "x /min");
         frequencyCounter = 0;
         minutesCounter++;
       }
+      // display all new detected breaths
       setFrequencyCounter("Atemzüge aktuell: " + currentBreathFrequency + "x");
 
     } else {
@@ -69,75 +66,64 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
   // this method calculates the current slope for every new value in comparison with the last
   var calculateSlope = function(values) {
-    valuesToCheck = [];
 
     slopesArray[0] = values[values.length - 2];
     slopesArray[1] = values[values.length - 1];
 
     var currentSlope = ((slopesArray[1].z - slopesArray[0].z) / (slopesArray[1].timestamp - slopesArray[0].timestamp)) / 100000;
 
-    valuesToCheck.push({"currentSlope": currentSlope, "timestampLast": slopesArray[1].timestamp, "zLast":slopesArray[1].z, "timestampFirst": slopesArray[0].timestamp, "zFirst":slopesArray[0].z});
+    var timeStampFirstValue = slopesArray[0].timestamp;
+    var zValueFirstValue = slopesArray[0].z;
 
-    checkIfSlopeChanged(valuesToCheck);
+    checkIfSlopeChanged(currentSlope, timeStampFirstValue, zValueFirstValue);
   };
 
   // this method is checking if the slope changes across the values in order to calculate turning-points
   // this turning-points are being stored in an array with z-value and timestamp for each point
-  var checkIfSlopeChanged = function(value) {
-    var help = value;
+  var checkIfSlopeChanged = function(slope, timestampFirst, zValueFirst) {
 
-    calculatedSlopesArray[1] = help[0].currentSlope;
-
-    if(calculatedSlopesArray.length === 0) {
-
-      if(calculatedSlopesArray[1] < 0) {
+    // if there aren't yet any calculated slopes identifiers, set an initial slope identifier
+    if(calculatedSlopesArray[0] === undefined) {
+      if(slope < 0) {
         slopeStatusOldValue = "negative";
 
-      } else if(calculatedSlopesArray[1] > 0) {
+      } else if(slope > 0) {
         slopeStatusOldValue = "positive";
 
       } else {
-        slopeStatusOldValue = "zero";
+        // don't set an slope identifier
       }
-
-    }  else {
-
-      if(calculatedSlopesArray[0] < 0) {
-        slopeStatusOldValue = "negative";
-
-      } else if(calculatedSlopesArray[0] > 0) {
-        slopeStatusOldValue = "positive";
-
-      } else {
-        // do nothing
-      }
-    }
-
-    if(calculatedSlopesArray[1] < 0) {
-      slopeStatusNewValue = "negative";
-
-    } else if (calculatedSlopesArray[1] > 0) {
-      slopeStatusNewValue = "positive";
-
     } else {
-      // do nothing
+      // if there is at least one slope identifier in the array, set the slope identifier for the new measured slope-value
+      if(slope < 0) {
+        slopeStatusNewValue = "negative";
+
+      } else if (slope > 0) {
+        slopeStatusNewValue = "positive";
+
+      } else {
+        // don't set an slope identifier
+      }
+      slopeStatusOldValue = calculatedSlopesArray[0];
     }
 
     // always when an old and a new slope-value are different, count it as a new turning-point
     if(slopeStatusNewValue != slopeStatusOldValue) {
+
       frequencyCounter++;
 
       // save all points, where the slope changes
-      valuesWhereSlopeChanged.push({"timestamp": help[0].timestampFirst, "z": help[0].zFirst});
+      valuesWhereSlopeChanged.push({"timestamp": timestampFirst, "z": zValueFirst});
 
       // store for the second points of the slope-calculation
       // valuesWhereSlopeChanged.push({"timestamp": help[0].timestampLast, "z": help[0].zLast});
     }
 
-    // exchange the old slope-value with the one from the latest value
-    calculatedSlopesArray[0] = calculatedSlopesArray[1];
+    // exchange the old slope-identifier with the one from the newest slope-value
+    calculatedSlopesArray[0] = slopeStatusNewValue;
   };
 
+  // method which returns the current number of breaths
   var getBreathFrequency = function() {
     var current = ((frequencyCounter - 1) / 2);
     return current;
@@ -148,6 +134,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     return valuesWhereSlopeChanged;
   };
 
+  // method to set save set the start-timestamp
   var setStartTimestamp = function(value) {
     startTimestamp = value;
   };
