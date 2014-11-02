@@ -13,6 +13,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     currentTimestamp,
     currentSecond,
     frequencyLastMinute,
+    minutesCounter,
     valuesToCheck;
 
   // init-function to be sure, that all values are set back every time a measurement starts
@@ -27,6 +28,7 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     valuesToCheck = [];
     currentSecond = 0;
     currentTimestamp = 0;
+    minutesCounter = 1;
     frequencyLastMinute = 0;
   };
 
@@ -54,8 +56,9 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
       if(currentSecond === 59) {
         frequencyLastMinute = currentBreathFrequency;
-        setFrequencyLastMinute("Atemfrequenz l. Minute: " + frequencyLastMinute + "x /min");
+        setFrequencyLastMinute("Atemfrequenz " + minutesCounter + ". Minute: " + frequencyLastMinute + "x /min");
         frequencyCounter = 0;
+        minutesCounter++;
       }
       setFrequencyCounter("Atemzüge aktuell: " + currentBreathFrequency + "x");
 

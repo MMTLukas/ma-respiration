@@ -28,6 +28,7 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   var start = function () {
     FrequencyCalculator.init();
     setFrequencyCounter("Atemzüge aktuell: -");
+    setFrequencyLastMinute("");
     setStartTimestamp();
 
     toggleText = "Stop";
