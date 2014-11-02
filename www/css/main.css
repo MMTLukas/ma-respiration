@@ -41,7 +41,7 @@ html, body {
 }
 
 .button {
-    background: rgba(242, 108, 108, 0.7);
+    background: rgba(242, 108, 108, 0.85);
     width:100%;
     float: left;
     font-size: 32px;
