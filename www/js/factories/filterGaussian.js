@@ -117,19 +117,19 @@ angular.module('respiratoryFrequency').factory('FilterGaussian', function () {
         var coefficientsIndex = (j - i) + coefficients.length / 2;
         // coefficients-Array does not overlap the data array
         if (j >= 0 && j < data.length) {
-          value += data[j] * coefficients[coefficientsIndex];
-          //console.log("VALUE:" + value);
+          value += data[j].z * coefficients[coefficientsIndex];
         }
         // calculate filtered data when the coefficients-Array overlap the data-Array on the left side
         else if (j < 0) {
-          value += data[j * (-1)] * coefficients[coefficientsIndex];
+          value += data[j * (-1)].z * coefficients[coefficientsIndex];
         }
         // calculate filtered data when the coefficients-Array overlap the data-Array on the right side
         else {
-          value += data[2 * data.length - j - 2] * coefficients[coefficientsIndex];
+          value += data[2 * data.length - j - 2].z * coefficients[coefficientsIndex];
         }
 
       }
+
       filteredData.push({"timestamp": data[i].timestamp, "z": value});
     }
 

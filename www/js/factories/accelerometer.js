@@ -94,13 +94,14 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
         if (gaussianFilteredData.length > 0) {
 
           //TODO: Remove line below and uncomment comment lines below
-          calculatorStorage = diagramStorage;
-          /*
+          //calculatorStorage = diagramStorage;
+
+
           calculatorStorage.push({
             "timestamp": currentData.timestamp,
             "z": gaussianFilteredData[0].z
           });
-          */
+
 
           gaussianFilteredData.shift();
         }
@@ -118,6 +119,9 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
   };
 
   var stop = function () {
+    for(var i = 0; i < gaussianFilteredData.length; i++) {
+      console.log(JSON.stringify(gaussianFilteredData[i]));
+    }
     toggleText = "Start";
     navigator.accelerometer.clearWatch(isWatching);
     isWatching = null;
