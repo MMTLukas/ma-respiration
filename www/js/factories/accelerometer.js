@@ -95,12 +95,11 @@ angular.module('respiratoryFrequency').factory('Accelerometer', function ($timeo
 
           //TODO: Remove line below and uncomment comment lines below
           calculatorStorage = diagramStorage;
-          /*
-          calculatorStorage.push({
+
+          /*calculatorStorage.push({
             "timestamp": currentData.timestamp,
             "z": gaussianFilteredData[0].z
-          });
-          */
+          });*/
 
           gaussianFilteredData.shift();
         }
