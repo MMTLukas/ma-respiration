@@ -12,6 +12,8 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
     frequencyLastMinute,
     minutesCounter;
 
+  var liveDurationInMs = 20000;
+
   // init-function to be sure, that all values are set back every time a measurement starts
   var init = function() {
     liveData = [];
@@ -131,6 +133,11 @@ angular.module('respiratoryFrequency').factory('FrequencyCalculator', function (
 
   // method which gets back the values of all turning-points - necessary to sign them in the live-diagram
   var getBreathPoints = function() {
+    // remove all values which are older than needed in live diagram
+    if (valuesWhereSlopeChanged.length > 0 && valuesWhereSlopeChanged[0].timestamp < (new Date().getTime() - liveDurationInMs)) {
+      valuesWhereSlopeChanged.shift();
+    }
+
     return valuesWhereSlopeChanged;
   };
 

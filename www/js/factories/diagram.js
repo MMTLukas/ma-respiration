@@ -1,5 +1,5 @@
 angular.module('respiratoryFrequency').factory('Diagram', function ($interval, Accelerometer, FrequencyCalculator) {
-  var HEIGHT = window.innerHeight - 172;
+  var HEIGHT = window.innerHeight - 222;
   var WIDTH = window.innerWidth;
   var isDrawing = null;
 
