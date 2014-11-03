@@ -13,11 +13,11 @@ html, body {
     padding: 0;
     height: 100%;
     width: 100%;
-    background: rgba(245, 245, 245, 1);
+
     color: #FFCA5C;
 }
 
-#ng-app {
+#app {
     height: 100%;
     width: 100%;
 }
@@ -37,12 +37,11 @@ html, body {
 }
 
 #menu .half:first-child {
-    border-right: 3px solid #FFCA5C;
+    border-right: 1px solid #555;
 }
 
 .button {
-    background: rgba(177, 52, 47, 0.55);
-    border-bottom: 4px solid rgba(177, 52, 47, 0.55);
+    background: #F26C68;
     width:100%;
     float: left;
     font-size: 32px;
@@ -56,39 +55,19 @@ html, body {
 }
 
 .button:active, .button.active {
-    background: rgba(145, 42, 39, 1);
-    border-bottom: 4px solid #FFCA5C;
-}
-
-.button.half.active > a {
-    color: #FFCA5C !important;
+    background: #D35E5A;
 }
 
 .button a:link, .button a:visited {
     text-decoration: none;
-    color: #835900 !important;
-    width: 100%;
-    height: 100%;
-    float: left;
-
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.toggleButton a:link, .toggleButton a:visited {
-    text-decoration: none;
-    width: 100%;
-    height: 100%;
-    float: left;
-
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.toggleButton a {
     color: #FFCA5C;
+    width: 100%;
+    height: 100%;
+    float: left;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 /**
@@ -99,27 +78,18 @@ html, body {
     width: 100%;
     background: #F26C68;
     text-align: center;
+
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    height: auto;
-    overflow: hidden;
 }
 
 #counter {
     padding: 10px 0 10px 0;
     position: fixed;
-    min-height: 60px;
-    height: auto;
-    max-height: 90px;
     font-size: 30px;
-    line-height: 40px;
+    line-height: 52px;
     bottom: 0;
-}
-
-#counter .lastMinute {
-    font-size: 21px;
-    line-height: 24px;
 }
 
 /**
@@ -149,7 +119,7 @@ html, body {
     height:50px;
     width: 100%;
     line-height:50px;
-    /*border-top: 2px solid rgba(255, 202, 92, 0.55);*/
+    border-top: 1px solid #555;
 }
 
 #data .button a{
@@ -164,8 +134,9 @@ html, body {
 
 .viewArchiv {
     width: 100%;
-    height: 100%;
+    background-color: azure;
 }
+
 
 #archiv {
     width: 100%;
@@ -182,7 +153,6 @@ html, body {
     text-align: center;
     margin-bottom: -10px;
 }
-
 #archiv li{
     font-size: 20px;
     color: #F26C68;

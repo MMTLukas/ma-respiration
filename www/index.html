@@ -4,7 +4,8 @@
     <meta charset="utf-8"/>
     <meta name="format-detection" content="telephone=no"/>
     <meta name="msapplication-tap-highlight" content="no"/>
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi"/>
+    <meta name="viewport"
+          content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi"/>
 
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
     <link rel="stylesheet" type="text/css" href="css/d3.css"/>
@@ -13,7 +14,7 @@
 </head>
 <body>
 
-<div id="ng-app">
+<div class="ng-app">
     <div ng-controller="NavigationController as navigationCtrl">
         <div id="menu">
             <div class="button half" ng-class="{ active:navigationCtrl.isSelected(1) }">
@@ -23,12 +24,10 @@
                 <a href ng-click="navigationCtrl.selectTab(2)">Archiv</a>
             </div>
         </div>
-
         <div class="viewLive" ng-show="navigationCtrl.isSelected(1)" ng-swipe-left="navigationCtrl.goToArchiv()">
             <div id="data" ng-controller="DataController as dataCtrl">
-                <div class="toggleButton" ng-click="dataCtrl.toggle()"><a href>{{ toggleButtonText }}</a></div>
+                <div class="button"><a href ng-click="dataCtrl.toggle()">{{ toggleButtonText }}</a></div>
             </div>
-
             <div id="diagram"></div>
 
             <div id="counter" ng-controller="CounterController as counterCtrl">
@@ -40,20 +39,19 @@
         </div>
 
         <div class="viewArchiv" ng-show="navigationCtrl.isSelected(2)" ng-swipe-right="navigationCtrl.goToLiveView()">
-            <div id="archiv">
-                <p><br/>Hier könnte ein Archiv sein,<br/> in dem alte Messungen abgespeichert werden.</p><br/><br/>
-                   <p style ="font-size: 20px; font-weight: bold;">
-                       Denkbare Funktionen:
-                       <li>Messungen verwalten</li>
-                       <li>Diagram betrachten</li>
-                       <li>Messungen löschen</li>
-                   </p>
+            <div id="archiv"><br/>
+                <p>Hier könnte ein Archiv erstellt werden, in dem Messungen abgespeichert werden.</p>
+                <br/><br/>
+                <p style="font-size: 20px; font-weight: bold;">
+                    Funktionen:
+                <li>Messungen ansehen</li>
+                <li>Messungen löschen</li>
+                </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Angular files -->
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/libs/d3.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.js"></script>
